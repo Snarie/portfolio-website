@@ -5,10 +5,10 @@ namespace controllers;
 class HomeController
 {
 	public function home() {
-		require path('views', 'home.view.php');
+		return template('default.php', view('home.view.php'));
 	}
 
 	public function  about() {
-		require path('views', 'about.view.php');
+		return template('default.php', view('about.view.php'));
 	}
 }
