@@ -1,19 +1,19 @@
 <?php
 
 /**
- * This class is responsible for handling routes in the application
- * It uses singeleton pattern to ensure only 1 instance exist at one moment
- * The router registers different HTTP methods (GET POST PUT DELETE) and connects them with their controller methods
+ * This class handles routing in the application.
+ * It uses singleton pattern to ensure only 1 instance exist at one moment.
+ * The router registers different HTTP methods (GET POST PUT DELETE) and connects them with their controller methods.
  */
 class Router
 {
 	/**
 	 * @var Router|null Stores the Singleton instance
 	 */
-	private static $router;
+	private static ?Router $router;
 
 	/**
-	 * @param array $routes Optional array of routes
+	 * @param array $routes An optional array of routes
 	 */
 	private function __construct(private array $routes = []) {
 
@@ -25,7 +25,7 @@ class Router
 	 * @return self The single instance of the Router class
 	 */
 	public static function getRouter(): self {
-		// If the router is not yet instantiated, create a new instance
+		// If no instance of teh router exists, create a new instance.
 		if(!isset(self::$router)) {
 			self::$router = new self();
 		}
