@@ -1,2 +1,1 @@
-<?php
-echo 'about view';
+<p>about view</p>
