@@ -77,29 +77,35 @@ class Router
 	 *
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method for handling the route
-	 * @param string $method The HTTP method (GET, POST, PUT, DELETE)
+	 * @param string $method The HTTP method (e.g., GET, POST)
 	 */
 	protected function register(string $uri, string $action, string $method): void {
+
+		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([0-9]+)', $uri);
 		if(!isset($this->routes[$method])) $this->routes[$method] = [];
 
 		list($controller, $function) = $this->extractAction($action);
 
-		$this->routes[$method][$uri] = [
+		$this->routes[$method][$uriPattern] = [
+			'controller' => $controller,
+			'method' => $function,
+			'params' => [] // to store dynamic if needed
+		];
+		/*$this->routes[$method][$uri] = [
 			'controller' => $controller,
 			'method' => $function
-		];
+		];*/
 	}
 
 
 	/**
 	 * Extracts the controller and method from the action
 	 *
-	 * @param string $action The action string (e.g. "HomeController@index")
+	 * @param string $action The action string (e.g., "HomeController@index")
 	 * @param string $separator The separator between controller and method (default is '@')
 	 * @return array An array with in order the controller name, and the method name.
 	 */
 	protected function extractAction(string $action, string $separator = '@'): array {
-		// Find the position of the separator in the action string.
 		$sepPos = strpos($action, $separator);
 
 		$controller = substr($action, 0, $sepPos);
@@ -111,26 +117,39 @@ class Router
 
 	/**
 	 * @param array $arr
-	 * @param string $method The method
+	 * @param string $method The HTTP method (e.g., GET, POST)
 	 * @param string $uri The URI that must be found
 	 * @return array|null
 	 */
 	public function getRoute(array $arr, string $method, string $uri): ?array {
 		if (!isset($arr[$method])) {
-			return null; // method not foundf
-		}
-		if (!isset($arr[$method][$uri])) {
-			return null; // URI not found
+			return null; // HTTP method not found
 		}
 
-		return $arr[$method][$uri];
+		foreach ($arr[$method] as $routePattern => $route) {
+			if (preg_match("#^$routePattern$#", $uri, $matches)) {
+				array_shift($matches); // Remove full match
+				$route['params'] = $matches; // Store match
+				return $route;
+			}
+		}
+		return null;
 	}
+
+	/**
+	 * Dispatch the request to the appropriate controller and function
+	 *
+	 * @param string $method The HTTP method (e.g., GET, POST)
+	 * @param string $uri The requested URI
+	 * @return bool Returns true if route found, false otherwise
+	 */
 	public function route(string $method, string $uri): bool {
 		$result = $this->getRoute($this->routes, $method, $uri);
 		if(!$result) abort("Route not found", 404);
 
 		$controller = $result['controller'];
 		$function = $result['method'];
+		$params = $result['params'] ?? [];
 
 		if(class_exists($controller)) {
 
@@ -138,7 +157,7 @@ class Router
 
 			if(method_exists($controllerInstance, $function)) {
 
-				$controllerInstance->$function();
+				call_user_func_array([$controllerInstance, $function], $params);
 				return true;
 
 			} else {

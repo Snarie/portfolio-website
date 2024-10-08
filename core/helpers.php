@@ -38,12 +38,16 @@ function path(string ...$segments): string
  *
  * @param string $templateName The name of the template file
  * @param string $viewPath The name of the view (used inside the template)
- * @return bool True if template was successfully loaded.
+ * @param array $data The data passed through (e.g., userid)
+ * @return bool True if template successfully loaded.
  */
-function template(string $templateName, string $viewPath): bool {
+function template(string $templateName, string $viewPath, array $data = []): bool {
+
 	$filePath = path("templates", $templateName);
 
 	if (file_exists($filePath)) {
+		extract($data);
+
 		include $filePath;
 		return true;
 	}
