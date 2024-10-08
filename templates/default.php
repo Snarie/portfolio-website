@@ -6,7 +6,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="../public/javascript/script.js"></script>
+    <script src="../public/javascript/navbar-toggle.js"></script>
     <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/header.css">
     <title>Document</title>
 </head>
 <body>
