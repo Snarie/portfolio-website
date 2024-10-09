@@ -19,6 +19,9 @@ $router = Router::getRouter();
 // Include the file containing the registered routes.
 require path('routes.php');
 
+// Include the file containing the database connection.
+require path('db.php');
+
 // Get the current method and URI
 // The request method (e.g. GET, POST)
 // The request URI (e.g. /about)
