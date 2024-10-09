@@ -1,8 +1,16 @@
 :root {
+    --main-color: #eee;
+    --main-color-2: #fff;
+    --secondary-color: #d31;
+    --secondary-color-2: #f42;
+    --secondary-color-o: rgba(200, 30, 30, 0.95);
+    --text-color: #111;
+    --text-color-2: #222;
+}
+
+.dark-mode {
     --main-color: #222;
     --main-color-2: #444;
-    --secondary-color: #282;
-    --secondary-color-2: #4E4;
     --text-color: #ddd;
     --text-color-2: #eee;
 }
@@ -15,5 +23,6 @@
 
 body {
     margin-top: 100px;
+    background-color: var(--main-color);
+    color: var(--text-color);
 }
-
