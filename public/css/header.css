@@ -16,68 +16,121 @@ header {
     color: var(--secondary-color-2);
 }
 
-.navbar-button {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 30px;
-    height: 25px;
-    cursor: pointer;
-    z-index: 7;
-}
 
-.navbar-button div {
-    width: 30px;
-    height: 4px;
-    background-color: var(--secondary-color-2);
-    transition: all 0.3s ease;
-    z-index: 6;
-}
-
-.navbar-fullscreen {
+/**
+ * Fullscreen background styling and positioning of items.
+ */
+nav.navbar-fullscreen {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.9);
+    background-color: var(--secondary-color-o);
     justify-content: center;
     align-items: center;
-    z-index: 4;
+    z-index: 4; /* positioned below the header */
 }
 
-.navbar-fullscreen {
+/* Hidden state of the fullscreen navbar */
+nav.navbar-fullscreen {
     top: 0;
     left: 0;
     opacity: 0;
     transform: translateZ(-50px);
     transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.navbar-fullscreen.show {
+/* Shown state of the fullscreen navbar */
+nav.navbar-fullscreen.show {
     opacity: 1;
     transform: translateZ(0);
 }
-.navbar-fullscreen.show ul {
-    opacity: 1;
-}
-.navbar-fullscreen ul {
-    opacity: 0;
-}
 
-.navbar-fullscreen ul {
+/* General <ul> styling inside navbar */
+nav.navbar-fullscreen ul {
     list-style-type: none;
     text-align: center;
 }
-.navbar-fullscreen li {
+/* Hidden state of <ul> inside navbar */
+nav.navbar-fullscreen ul {
+    opacity: 0;
+}
+/* Shown state of <ul> inside navbar */
+nav.navbar-fullscreen.show ul {
+    opacity: 1;
+}
+
+/* Margin between each <li> element */
+nav.navbar-fullscreen li {
     margin: 20px 0;
 }
-.navbar-fullscreen a {
-    color: var(--text-color);
+
+/* Styling for buttons inside navbar*/
+nav.navbar-fullscreen li button {
+    border: none;
+    background: none;
+    color: var(--main-color-2);
+}
+/* Change button text color when hovering*/
+nav.navbar-fullscreen li button:hover {
+    color: var(--main-color);
+}
+
+/* Ensure <li> elements are block-level and properly spaced */
+nav.navbar-fullscreen ul li {
+    position: relative;
+    display: block; /* Make each <li> take full width */
+    padding: 10px 15px;
+}
+
+/* Add an animated line under the <li> when hovered */
+nav.navbar-fullscreen ul li::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background-color: var(--main-color);
+    transform: scaleX(0); /* Hidden by default */
+    transform-origin: right; /* Start animation from the right */
+    transition: transform 0.3s cubic-bezier(.23,.99,.34,1.01) /* quadratic transform with slower start */
+}
+
+/* Hover effect to expand the line below the item */
+nav.navbar-fullscreen ul li:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Link styling inside the navbar */
+nav.navbar-fullscreen a {
+    color: var(--main-color);
     font-size: 24px;
     text-decoration: none;
 }
-.navbar-fullscreen.show {
+/* Display flex box for shown navbar */
+nav.navbar-fullscreen.show {
     display: flex;
 }
 
+/* navbar menu styling*/
+.navbar-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    cursor: pointer; /* Indicate clickable */
+    z-index: 7;
+}
+
+/* Individual lines of button */
+.navbar-button div {
+    width: 30px;
+    height: 4px;
+    background-color: var(--secondary-color-2);
+    transition: transform 0.3s ease, background-color 0.5s ease 0.2s;
+    z-index: 6;
+}
 
 .navbar-button.active div:nth-child(1) {
     transform: translate(0px, 9px) rotate(180deg);
@@ -88,3 +141,12 @@ header {
 .navbar-button.active div:nth-child(3) {
     transform: translate(0px, -9px) rotate(180deg);
 }
+
+.navbar-button.active div {
+    background-color: var(--main-color);
+}
+
+
+
+
+
