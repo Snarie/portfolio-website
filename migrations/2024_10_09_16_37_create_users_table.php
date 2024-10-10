@@ -2,7 +2,7 @@
 
 class CreateUsersTable
 {
-	public function up(PDO $conn) {
+	public function up(PDO $conn): void {
 		$sql = "CREATE TABLE users (
             id INT AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
@@ -15,7 +15,7 @@ class CreateUsersTable
 		$conn->exec($sql);
 	}
 
-	public function down(PDO $conn) {
+	public function down(PDO $conn): void {
 		$sql = "DROP TABLE users";
 		$conn->exec($sql);
 	}
