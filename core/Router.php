@@ -39,7 +39,7 @@ class Router
 	 * @param string $action The controller and method
 	 */
 	public function get(string $uri, string $action): void {
-		$this->register($uri, $action, "GET");
+		$this->register($uri, $this->convertToAction($action), "GET");
 	}
 
 	/**
@@ -49,7 +49,7 @@ class Router
 	 * @param string $action The controller and method
 	 */
 	public function post(string $uri, string $action): void {
-		$this->register($uri, $action, "POST");
+		$this->register($uri, $this->convertToAction($action), "POST");
 	}
 
 	/**
@@ -59,7 +59,7 @@ class Router
 	 * @param string $action The controller and method
 	 */
 	public function put(string $uri, string $action): void {
-		$this->register($uri, $action, "PUT");
+		$this->register($uri, $this->convertToAction($action), "PUT");
 	}
 
 	/**
@@ -68,10 +68,19 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function delete(string $uri, string $action): void{
-		$this->register($uri, $action, "DELETE");
+	public function delete(string $uri, string $action): void {
+		$this->register($uri, $this->convertToAction($action), "DELETE");
 	}
 
+	/**
+	 * Converts the short action to it's full counterpart.
+	 *
+	 * @param string $action The action as defined in routes.php
+	 * @return string Returns the action route to the action
+	 */
+	private function convertToAction(string $action): string {
+		return "controllers\\$action";
+	}
 	/**
 	 * Registers a route for a given HTTP method
 	 *
