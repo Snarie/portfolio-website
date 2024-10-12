@@ -27,7 +27,7 @@ nav.navbar-fullscreen {
     background-color: var(--secondary-color-o);
     justify-content: center;
     align-items: center;
-    z-index: 4; /* positioned below the header */
+    z-index: -1; /* positioned below the header */
 }
 
 /* Hidden state of the fullscreen navbar */
@@ -37,11 +37,14 @@ nav.navbar-fullscreen {
     opacity: 0;
     transform: translateZ(-50px);
     transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
 }
 /* Shown state of the fullscreen navbar */
 nav.navbar-fullscreen.show {
     opacity: 1;
     transform: translateZ(0);
+    z-index: 4;
+    pointer-events: auto;
 }
 
 /* General <ul> styling inside navbar */

@@ -62,3 +62,14 @@ function template(string $templateName, string $viewPath, array $data = []): boo
 function view(string $viewName) {
 	return __DIR__ . '/../views/' . $viewName;
 }
+
+
+function conn(): PDO {
+	static $pdo = null;
+
+	if ($pdo === null) {
+		$pdo = require __DIR__ . '/../db.php';
+	}
+
+	return $pdo;
+}

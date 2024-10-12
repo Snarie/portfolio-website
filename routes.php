@@ -5,11 +5,11 @@ $router->get("/about", "controllers\HomeController@about");
 
 $router->get("/projects", "controllers\ProjectController@index");
 $router->get("/projects/create", "controllers\ProjectController@create");
-$router->post("/projects", "controller\ProjectController@store");
-$router->get("/projects/{id}", "controller\ProjectController@show");
-$router->get("/projects/{id}/edit", "controller\ProjectController@edit");
-$router->put("/projects/{id}", "controller\ProjectController@update");
-$router->delete("projects/{id}", "controller\ProjectController@destroy");
+$router->post("/projects", "controllers\ProjectController@store");
+$router->get("/projects/{id}", "controllers\ProjectController@show");
+$router->get("/projects/{id}/edit", "controllers\ProjectController@edit");
+$router->put("/projects/{id}", "controllers\ProjectController@update");
+$router->delete("projects/{id}", "controllers\ProjectController@destroy");
 
 //$router->get("/profiles", "controllers\ProfileController@index");
 //$router->get("/profiles/create", "controllers\ProfileController@create");

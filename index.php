@@ -1,7 +1,15 @@
 <?php
 
+
 require __DIR__ . "\core\helpers.php";
 require __DIR__ . "\core\Router.php";
+
+
+// Include the file containing the database connection.
+//$conn = require __DIR__ . "\db.php";
+
+
+
 
 /**
  * Autoload function to dynamically load required classes.
@@ -11,7 +19,14 @@ spl_autoload_register(function($class) {
 
 	$class = str_replace("\\", DIRECTORY_SEPARATOR, $class);
 
-	require __DIR__ . "\\$class.php";
+	$file = __DIR__ . '\\' . $class . '.php';
+
+	if (file_exists($file)) {
+		require_once $file;
+	} else {
+		throw new Exception("File for class $class not found at $file.");
+	}
+//	require __DIR__ . "\\$class.php";
 });
 
 // Create Router instance.
@@ -19,8 +34,6 @@ $router = Router::getRouter();
 // Include the file containing the registered routes.
 require path('routes.php');
 
-// Include the file containing the database connection.
-require path('db.php');
 
 // Get the current method and URI
 // The request method (e.g. GET, POST)
