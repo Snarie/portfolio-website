@@ -21,15 +21,20 @@ class ProjectController
 	{
 		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
 		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return template('default.php', view('projects/create.view.php'), ['tools' => $tools]);
+		return template('formpage.php', view('projects/create.view.php'), ['tools' => $tools]);
 	}
 
 	public function store(): bool
 	{
 		$name = $_POST['name'] ?? null;
+
 		$description = $_POST['description'] ?? null;
+
 		$start_date = $_POST['start_date'] ?? null;
+
 		$end_date = $_POST['end_date'] ?? null;
+		if (isset($_POST['disable_end_date'])) $end_date = null;
+
 		$tools = $_POST['tools'] ?? [];
 
 		if (!$name || !$description || !$start_date) {
@@ -44,6 +49,7 @@ class ProjectController
 			':start_date' => $start_date,
 			':end_date' => $end_date
 		]);
+
 		// Get the ID of the newly created project
 		$projectId = $this->conn->lastInsertId();
 
