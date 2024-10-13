@@ -6,11 +6,11 @@ class HomeController
 {
 	public function home(): bool
 	{
-		return template('default.php', view('home.view.php'));
+		return route(view('home'));
 	}
 
 	public function  about(): bool
 	{
-		return template('default.php', view('about.view.php'));
+		return route(view('about'));
 	}
 }

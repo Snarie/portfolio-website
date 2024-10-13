@@ -14,14 +14,14 @@ class ProjectController
 
 	public function index(): bool
 	{
-		return template('default.php', view('projects/index.view.php'));
+		return route(view('projects/index'));
 	}
 
 	public function create(): bool
 	{
 		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
 		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return template('formpage.php', view('projects/create.view.php'), ['tools' => $tools]);
+		return route(view('projects/create', 'formpage'), ['tools' => $tools]);
 	}
 
 	public function store(): bool
@@ -71,12 +71,12 @@ class ProjectController
 
 	public function show(int $id): bool
 	{
-		return template('default.php', view('projects/show.view.php'), ['id' => $id]);
+		return route(view('projects/show'), ['id' => $id]);
 	}
 
 	public function edit(int $id): bool
 	{
-		return template('default.php', view('projects/edit.view.php'), ['id' => $id]);
+		return route(view('projects/edit'), ['id' => $id]);
 	}
 
 	public function update(int $id): bool

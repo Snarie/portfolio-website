@@ -34,17 +34,29 @@ function path(string ...$segments): string
 }
 
 /**
- * Loads the specified template.
+ * Generates the path towards the provided view and template
  *
- * @param string $templateName The name of the template file
- * @param string $viewPath The name of the view (used inside the template)
+ * @param string $viewPath The name of the view
+ * @param string $templateName The name of the template
+ * @return array In order the vie path and template path.
+ */
+function view(string $viewPath, string $templateName = "default"): array {
+	$viewPath = path('views', $viewPath . '.view.php');
+	$templatePath = path('templates', $templateName . '.php');
+	return [$viewPath, $templatePath];
+
+}
+
+/**
+ * Loads the specified view with it's template.
+ *
+ * @param array $paths The view and template paths
  * @param array $data The data passed through (e.g., userid)
  * @return bool True if template successfully loaded.
  */
-function template(string $templateName, string $viewPath, array $data = []): bool {
-
-	$filePath = path("templates", $templateName);
-
+function route(array $paths, array $data = []): bool {
+	$viewPath = $paths[0];
+	$filePath = $paths[1];
 	if (file_exists($filePath)) {
 		extract($data);
 
@@ -53,16 +65,6 @@ function template(string $templateName, string $viewPath, array $data = []): boo
 	}
 	return false;
 }
-
-/**
- * Generates the path towards the provided view name
- * @param string $viewName The name of the view file
- * @return string The path to the specified view
- */
-function view(string $viewName) {
-	return __DIR__ . '/../views/' . $viewName;
-}
-
 
 function conn(): PDO {
 	static $pdo = null;
