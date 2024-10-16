@@ -10,6 +10,20 @@
     </article>
     <article class="grid gap-10">
         <div>
+            <label for="image" class="f-18">Select a Project Image (required)</label>
+            <input type="file" id="imageInput" accept="image/*" required>
+            <button type="button" onclick="openImagePopup()">Add Photo</button>
+        </div>
+        <div id="imagePopup" style="display: none;">
+            <canvas id="imageCanvas"></canvas>
+            <button type="button" onclick="cropImage()">Crop Image</button>
+        </div>
+        <div>
+            <input type="hidden" name="cropped_image" id="croppedImageInput">
+        </div>
+    </article>
+    <article class="grid gap-10">
+        <div>
             <label for="description" class="f-18">Project Description</label>
             <textarea id="description" name="description" required></textarea>
         </div>
@@ -51,3 +65,4 @@
 </form>
 
 <script src="/public/js/disable-end-date.js"></script>
+<script src="/public/js/image-cropper.js"></script>

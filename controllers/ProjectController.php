@@ -33,21 +33,46 @@ class ProjectController
 		$start_date = $_POST['start_date'] ?? null;
 
 		$end_date = $_POST['end_date'] ?? null;
-		if (isset($_POST['disable_end_date'])) $end_date = null;
 
 		$tools = $_POST['tools'] ?? [];
+
+		if (isset($_POST['disable_end_date'])) $end_date = null;
 
 		if (!$name || !$description || !$start_date) {
 			// If required fields are missing, redirect back to the create form
 			return $this->create();
 		}
 
-		$stmt = $this->conn->prepare("INSERT INTO projects (name, description, start_date, end_date) VALUES (:name, :description, :start_date, :end_date)");
+		$imagePath = null;
+
+		if (isset($_POST['cropped_image'])) {
+			$croppedImage = $_POST['cropped_image'];
+
+			$croppedImage = str_replace('data:image/jpeg;base64,' , '', $croppedImage);
+			$croppedImage = str_replace(' ', '+', $croppedImage);
+
+			$decodedImage = base64_decode($croppedImage);
+
+			$imageFileName = uniqid() . '.jpg';
+			$imagePath = 'uploads/projects/' . $imageFileName;
+			$fileFullPath = __DIR__ . '/../public/' . $imagePath;
+
+			if (!file_exists(dirname($fileFullPath))) {
+				mkdir(dirname($fileFullPath), 0777, true);
+			}
+
+			file_put_contents($fileFullPath, $decodedImage);
+		}
+
+		$stmt = $this->conn->prepare(
+			"INSERT INTO projects (name, description, start_date, end_date, image_link) VALUES (:name, :description, :start_date, :end_date, :image_link)"
+		);
 		$stmt->execute([
 			':name' => $name,
 			':description' => $description,
 			':start_date' => $start_date,
-			':end_date' => $end_date
+			':end_date' => $end_date,
+			':image_link' => $imagePath
 		]);
 
 		// Get the ID of the newly created project
@@ -58,7 +83,7 @@ class ProjectController
 		foreach ($tools as $toolId) {
 			$stmt->execute([
 				':project_id' => $projectId,
-				'tool_id' => $toolId
+				':tool_id' => $toolId
 			]);
 		}
 
