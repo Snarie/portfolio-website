@@ -1,0 +1,1 @@
+All images use the .jpg format with aspect ratio 16:9.
