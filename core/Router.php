@@ -1,5 +1,7 @@
 <?php
 
+use models\Model;
+
 /**
  * This class handles routing in the application.
  * It uses singleton pattern to ensure only 1 instance exist at one moment.
@@ -13,11 +15,19 @@ class Router
 	private static ?Router $router;
 
 	/**
-	 * @param array $routes An optional array of routes
+	 * @var array Stores the routes divided by HTTP methods
 	 */
-	private function __construct(private array $routes = []) {
+	private array $routes = [];
 
-	}
+	/**
+	 * @var array Stores named routes for easy URL generation.
+	 */
+	private array $namedRoutes = [];
+
+	/**
+	 * Private constructor to prevent direct instantiation.
+	 */
+	private function __construct() { }
 
 	/**
 	 * Retrieve single instance of Router
@@ -90,91 +100,52 @@ class Router
 	 */
 	protected function register(string $uri, string $action, string $method): void {
 
-		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([0-9]+)', $uri);
-		if(!isset($this->routes[$method])) $this->routes[$method] = [];
+		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<\1>[a-zA-Z0-9_]+)', $uri);
+		$uriPattern = "#^" . $uriPattern . "$#";
 
-		list($controller, $function) = $this->extractAction($action);
-
-		$this->routes[$method][$uriPattern] = [
-			'controller' => $controller,
-			'method' => $function,
-			'params' => [] // to store dynamic if needed
-		];
-		/*$this->routes[$method][$uri] = [
-			'controller' => $controller,
-			'method' => $function
-		];*/
+		$this->routes[$method][$uriPattern] = $action;
 	}
 
 
-	/**
-	 * Extracts the controller and method from the action
-	 *
-	 * @param string $action The action string (e.g., "HomeController@index")
-	 * @param string $separator The separator between controller and method (default is '@')
-	 * @return array An array with in order the controller name, and the method name.
-	 */
-	protected function extractAction(string $action, string $separator = '@'): array {
-		$sepPos = strpos($action, $separator);
-
-		$controller = substr($action, 0, $sepPos);
-
-		$function = substr($action, $sepPos + 1, strlen($action));
-
-		return [$controller, $function];
-	}
-
-	/**
-	 * @param array $arr
-	 * @param string $method The HTTP method (e.g., GET, POST)
-	 * @param string $uri The URI that must be found
-	 * @return array|null
-	 */
-	public function getRoute(array $arr, string $method, string $uri): ?array {
-		if (!isset($arr[$method])) {
-			return null; // HTTP method not found
-		}
-
-		foreach ($arr[$method] as $routePattern => $route) {
-			if (preg_match("#^$routePattern$#", $uri, $matches)) {
-				array_shift($matches); // Remove full match
-				$route['params'] = $matches; // Store match
-				return $route;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Dispatch the request to the appropriate controller and function
-	 *
-	 * @param string $method The HTTP method (e.g., GET, POST)
-	 * @param string $uri The requested URI
-	 * @return bool Returns true if route found, false otherwise
-	 */
 	public function route(string $method, string $uri): bool {
-		$result = $this->getRoute($this->routes, $method, $uri);
-		if(!$result) abort("Route not found", 404);
+		foreach ($this->routes[$method] as $uriPattern => $action) {
+			if (!preg_match($uriPattern, $uri, $matches)) {
+				continue;
+			}
+			$params = array_filter($matches, fn($key) => !is_int($key), ARRAY_FILTER_USE_KEY);
 
-		$controller = $result['controller'];
-		$function = $result['method'];
-		$params = $result['params'] ?? [];
+			list($controller, $function) = explode('@', $action);
 
-		if(class_exists($controller)) {
-
+			if (!class_exists($controller)) {
+				throw new \Exception("Controller $controller not found");
+			}
 			$controllerInstance = new $controller();
 
-			if(method_exists($controllerInstance, $function)) {
-
-				call_user_func_array([$controllerInstance, $function], $params);
-				return true;
-
-			} else {
-
-				abort("No method {$function} on class {$controller}", 500);
+			if (!method_exists($controllerInstance, $function)) {
+				throw new \Exception("Method $function not found in controller $controller");
 			}
-		}
 
-		return false;
+			// Convert parameters based on expected types
+			foreach ($params as $key => $value) {
+				$model = "models\\" . ucfirst($key);
+
+				if (!class_exists($model)) {
+					continue;
+				}
+
+				$modelInstance = new $model();
+
+				if (!$modelInstance instanceof Model) {
+					throw new \Exception("Class {$model} does not extend Model");
+				}
+
+				$model = $modelInstance::find($value);
+				$params[$key] = $model;
+			}
+			//print_r($params);
+			call_user_func_array([$controllerInstance, $function], $params);
+			return true;
+		}
+		throw new \Exception("Route not found");
 	}
 }

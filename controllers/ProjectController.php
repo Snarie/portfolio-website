@@ -1,9 +1,11 @@
 <?php
 
 namespace controllers;
-use PDO;
 
-class ProjectController
+use PDO;
+use models\Project;
+
+class ProjectController extends Controller
 {
 	private PDO $conn;
 
@@ -14,14 +16,14 @@ class ProjectController
 
 	public function index(): bool
 	{
-		return route(view('projects/index'));
+		return layout(view('projects/index'));
 	}
 
 	public function create(): bool
 	{
 		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
 		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return route(view('projects/create', 'formpage'), ['tools' => $tools]);
+		return layout(view('projects/create', 'formpage'), ['tools' => $tools]);
 	}
 
 	public function store(): bool
@@ -86,30 +88,30 @@ class ProjectController
 				':tool_id' => $toolId
 			]);
 		}
+		return $this->redirect()->route("projects.show", ['id' => $projectId])->with('message', 'Project created successfully.');
+//		header("Location: /projects/$projectId");
+//		exit();
 
-		header("Location: /projects/$projectId");
-		exit();
-
-		return true;
+//		return true;
 //		return $this->show($projectId);
 	}
 
-	public function show(int $id): bool
+	public function show(Project $project): bool
 	{
-		return route(view('projects/show'), ['id' => $id]);
+		return layout(view('projects/show'), ['id' => $project->id, 'project' => $project]);
 	}
 
-	public function edit(int $id): bool
+	public function edit(Project $project): bool
 	{
-		return route(view('projects/edit'), ['id' => $id]);
+		return layout(view('projects/edit'), ['id' => $project->id]);
 	}
 
-	public function update(int $id): bool
+	public function update(Project $project): bool
 	{
-		return $this->show($id);
+		return $this->show($project);
 	}
 
-	public function destroy(int $id): bool
+	public function destroy(Project $project): bool
 	{
 		return $this->index();
 	}

@@ -2,15 +2,15 @@
 
 namespace controllers;
 
-class HomeController
+class HomeController extends Controller
 {
 	public function home(): bool
 	{
-		return route(view('home'));
+		return layout(view('home'));
 	}
 
 	public function  about(): bool
 	{
-		return route(view('about'));
+		return layout(view('about'));
 	}
 }

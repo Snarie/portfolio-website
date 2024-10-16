@@ -54,7 +54,7 @@ function view(string $viewPath, string $templateName = "default"): array {
  * @param array $data The data passed through (e.g., userid)
  * @return bool True if template successfully loaded.
  */
-function route(array $paths, array $data = []): bool {
+function layout(array $paths, array $data = []): bool {
 	$viewPath = $paths[0];
 	$filePath = $paths[1];
 	if (file_exists($filePath)) {
@@ -75,3 +75,4 @@ function conn(): PDO {
 
 	return $pdo;
 }
+

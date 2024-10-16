@@ -16,17 +16,15 @@ require __DIR__ . "\core\Router.php";
  * This function automatically loads classes used in the script without manually including them.
  */
 spl_autoload_register(function($class) {
-
 	$class = str_replace("\\", DIRECTORY_SEPARATOR, $class);
-
-	$file = __DIR__ . '\\' . $class . '.php';
+	$file = __DIR__ . DIRECTORY_SEPARATOR . $class . '.php';
 
 	if (file_exists($file)) {
 		require_once $file;
 	} else {
-		throw new Exception("File for class $class not found at $file.");
+		error_log("File not found: " . $file);
+		throw new Exception("File for class $class not found at $file");
 	}
-//	require __DIR__ . "\\$class.php";
 });
 
 // Create Router instance.
