@@ -56,8 +56,10 @@ class ProjectController extends Controller
 			$decodedImage = base64_decode($croppedImage);
 
 			$imageFileName = uniqid() . '.jpg';
-			$imagePath = 'uploads/projects/' . $imageFileName;
-			$fileFullPath = __DIR__ . '/../public/' . $imagePath;
+			$imagePath = 'public/uploads/projects/' . $imageFileName;
+			$fileFullPath = path('public', 'uploads', 'projects', $imageFileName);
+
+			//$fileFullPath = __DIR__ . '/../public/' . $imagePath;
 
 			if (!file_exists(dirname($fileFullPath))) {
 				mkdir(dirname($fileFullPath), 0777, true);
