@@ -1,6 +1,6 @@
 <?php
 
-use core\RedirectResponse;
+use App\Responses\RedirectResponse;
 use JetBrains\PhpStorm\NoReturn;
 
 /**
@@ -42,7 +42,7 @@ function path(string ...$segments): string
  * @return array In order the vie path and template path.
  */
 function view(string $viewPath, string $templateName = "default"): array {
-	$viewPath = path('views', $viewPath . '.view.php');
+	$viewPath = path('app', 'views', $viewPath . '.view.php');
 	$templatePath = path('templates', $templateName . '.php');
 	return [$viewPath, $templatePath];
 

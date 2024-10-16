@@ -1,6 +1,6 @@
 <?php
 
-use models\Model;
+use App\Models\Model;
 
 /**
  * This class handles routing in the application.
@@ -117,7 +117,7 @@ class Router
 	 * @return string Returns the action route to the action
 	 */
 	private function convertToAction(string $action): string {
-		return "controllers\\$action";
+		return "App\\Controllers\\$action";
 	}
 
 	public function routeUrl(string $name, array $params = []): string {
@@ -156,7 +156,7 @@ class Router
 
 			// Convert parameters based on expected types
 			foreach ($params as $key => $value) {
-				$model = "models\\" . ucfirst($key);
+				$model = "App\\Models\\" . ucfirst($key);
 
 				if (!class_exists($model)) {
 					continue;

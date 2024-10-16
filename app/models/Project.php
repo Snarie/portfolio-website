@@ -1,6 +1,6 @@
 <?php
 
-namespace models;
+namespace App\Models;
 
 class Project extends Model
 {

@@ -1,10 +1,9 @@
 <?php
 
-namespace controllers;
+namespace App\Controllers;
 
-use core\RedirectResponse;
 use PDO;
-use models\Project;
+use App\Models\Project;
 
 class ProjectController extends Controller
 {

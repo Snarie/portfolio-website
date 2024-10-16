@@ -1,7 +1,7 @@
 <?php
-namespace core;
+namespace App\Responses;
 
-class RedirectResponse
+class RedirectResponse extends Response
 {
 	protected $url;
 	protected $statusCode;
