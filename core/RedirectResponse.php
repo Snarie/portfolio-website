@@ -1,4 +1,5 @@
 <?php
+namespace core;
 
 class RedirectResponse
 {
@@ -13,6 +14,9 @@ class RedirectResponse
 	}
 
 	public function with($key, $value) {
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
 		$_SESSION['flash'][$key] = $value;
 		return $this;
 	}

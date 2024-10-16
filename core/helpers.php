@@ -1,5 +1,6 @@
 <?php
 
+use core\RedirectResponse;
 use JetBrains\PhpStorm\NoReturn;
 
 /**
@@ -76,3 +77,10 @@ function conn(): PDO {
 	return $pdo;
 }
 
+function redirect($routeName, $params = []): RedirectResponse
+{
+	$router = Router::getRouter();
+	$url = $router->routeUrl($routeName, $params);
+	error_log($url);
+	return new RedirectResponse($url);
+}

@@ -4,12 +4,12 @@ namespace controllers;
 
 class HomeController extends Controller
 {
-	public function home(): bool
+	public function home()
 	{
 		return layout(view('home'));
 	}
 
-	public function  about(): bool
+	public function  about()
 	{
 		return layout(view('about'));
 	}

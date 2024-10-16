@@ -43,13 +43,41 @@ class Router
 	}
 
 	/**
+	 * Registers a route for a given HTTP method
+	 *
+	 * @param string $method The HTTP method (e.g., GET, POST)
+	 * @param string $uri The URI for the route
+	 * @param string $action The controller and method for handling the route
+	 * @param string|null $name Optional name for route
+	 */
+	protected function register(string $method, string $uri, string $action, ?string $name = null): void {
+
+		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<\1>[a-zA-Z0-9_]+)', $uri);
+		$uriPattern = "#^" . $uriPattern . "$#";
+
+		$this->routes[$method][$uriPattern] = $action;
+
+		if ($name) {
+			$this->namedRoutes[$name] = $uri;
+		} else {
+			$name = $this->generateRouteName($action);
+			$this->namedRoutes[$name] = $uri;
+		}
+	}
+	private function generateRouteName(string $action): string {
+		list ($controller, $method) = explode('@', $action);
+		$controllerName = strtolower(str_replace('Controller', 's', basename($controller)));
+		return $controllerName . '.' . $method;
+	}
+
+	/**
 	 * Registers a GET route
 	 *
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function get(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "GET");
+	public function get(string $uri, string $action, ?string $name = null): void {
+		$this->register("GET", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -58,8 +86,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function post(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "POST");
+	public function post(string $uri, string $action, ?string $name = null): void {
+		$this->register("POST", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -68,8 +96,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function put(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "PUT");
+	public function put(string $uri, string $action, ?string $name = null): void {
+		$this->register("PUT", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -78,8 +106,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function delete(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "DELETE");
+	public function delete(string $uri, string $action, ?string $name = null): void {
+		$this->register("DELETE", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -91,23 +119,24 @@ class Router
 	private function convertToAction(string $action): string {
 		return "controllers\\$action";
 	}
-	/**
-	 * Registers a route for a given HTTP method
-	 *
-	 * @param string $uri The URI for the route
-	 * @param string $action The controller and method for handling the route
-	 * @param string $method The HTTP method (e.g., GET, POST)
-	 */
-	protected function register(string $uri, string $action, string $method): void {
 
-		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '(?P<\1>[a-zA-Z0-9_]+)', $uri);
-		$uriPattern = "#^" . $uriPattern . "$#";
-
-		$this->routes[$method][$uriPattern] = $action;
+	public function routeUrl(string $name, array $params = []): string {
+		if (!isset($this->namedRoutes[$name])) {
+			throw new Exception("No route named $name");
+			exit();
+		}
+		$url = $this->namedRoutes[$name];
+		foreach ($params as $key => $value) {
+			$url = str_replace("{" . $key . "}", urlencode($value), $url);
+		}
+		return $url;
 	}
 
-
 	public function route(string $method, string $uri): bool {
+		if (!isset($this->routes[$method])) {
+			throw new Exception("HTTP method $method not supported.");
+		}
+
 		foreach ($this->routes[$method] as $uriPattern => $action) {
 			if (!preg_match($uriPattern, $uri, $matches)) {
 				continue;
@@ -119,8 +148,8 @@ class Router
 			if (!class_exists($controller)) {
 				throw new \Exception("Controller $controller not found");
 			}
-			$controllerInstance = new $controller();
 
+			$controllerInstance = new $controller();
 			if (!method_exists($controllerInstance, $function)) {
 				throw new \Exception("Method $function not found in controller $controller");
 			}

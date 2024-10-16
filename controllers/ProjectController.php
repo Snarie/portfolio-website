@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use core\RedirectResponse;
 use PDO;
 use models\Project;
 
@@ -14,19 +15,19 @@ class ProjectController extends Controller
 		$this->conn = conn();
 	}
 
-	public function index(): bool
+	public function index()
 	{
 		return layout(view('projects/index'));
 	}
 
-	public function create(): bool
+	public function create()
 	{
 		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
 		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return layout(view('projects/create', 'formpage'), ['tools' => $tools]);
 	}
 
-	public function store(): bool
+	public function store()
 	{
 		$name = $_POST['name'] ?? null;
 
@@ -88,7 +89,7 @@ class ProjectController extends Controller
 				':tool_id' => $toolId
 			]);
 		}
-		return $this->redirect()->route("projects.show", ['id' => $projectId])->with('message', 'Project created successfully.');
+		return redirect("projects.show", ['project' => $projectId])->with('success', 'Project created successfully.')->send();
 //		header("Location: /projects/$projectId");
 //		exit();
 
@@ -96,22 +97,24 @@ class ProjectController extends Controller
 //		return $this->show($projectId);
 	}
 
-	public function show(Project $project): bool
+	public function show(Project $project)
 	{
 		return layout(view('projects/show'), ['id' => $project->id, 'project' => $project]);
 	}
 
-	public function edit(Project $project): bool
+	public function edit(Project $project)
 	{
+		//return redirect('projects.index')->send();
+		//return redirect('projects.show', ['project' => $project->id])->with('success', 'created successfully')->send();
 		return layout(view('projects/edit'), ['id' => $project->id]);
 	}
 
-	public function update(Project $project): bool
+	public function update(Project $project)
 	{
 		return $this->show($project);
 	}
 
-	public function destroy(Project $project): bool
+	public function destroy(Project $project)
 	{
 		return $this->index();
 	}
