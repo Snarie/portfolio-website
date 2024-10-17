@@ -4,6 +4,8 @@ namespace App\Controllers;
 
 use App\Responses\Response;
 use App\Models\Project;
+use App\Models\Tool;
+use App\Models\ProjectTool;
 use PDO;
 
 class ProjectController extends Controller
@@ -42,8 +44,8 @@ class ProjectController extends Controller
 		if (isset($_POST['disable_end_date'])) $end_date = null;
 
 		if (!$name || !$description || !$start_date) {
-			// If required fields are missing, redirect back to the create form
-			return $this->create();
+			// Redirect back to the create form if required fields are missing
+			return redirect('projects.create');
 		}
 
 		$imagePath = null;
@@ -69,39 +71,28 @@ class ProjectController extends Controller
 			file_put_contents($fileFullPath, $decodedImage);
 		}
 
-		$stmt = $this->conn->prepare(
-			"INSERT INTO projects (name, description, start_date, end_date, image_link) VALUES (:name, :description, :start_date, :end_date, :image_link)"
-		);
-		$stmt->execute([
-			':name' => $name,
-			':description' => $description,
-			':start_date' => $start_date,
-			':end_date' => $end_date,
-			':image_link' => $imagePath
+		$project = Project::create([
+			'name' => $name,
+			'description' => $description,
+			'start_date' => $start_date,
+			'end_date' => $end_date,
+			'image_link' => $imagePath
 		]);
 
-		// Get the ID of the newly created project
-		$projectId = $this->conn->lastInsertId();
-
-		$stmt= $this->conn->prepare("INSERT INTO project_tools (project_id, tool_id) VALUES (:project_id, :tool_id)");
-
 		foreach ($tools as $toolId) {
-			$stmt->execute([
-				':project_id' => $projectId,
-				':tool_id' => $toolId
+			ProjectTool::create([
+				'project_id' => $project->id,
+				'tool_id' => $toolId
 			]);
 		}
-		return redirect("projects.show", ['project' => $projectId])->with('success', 'Project created successfully.');
-//		header("Location: /projects/$projectId");
-//		exit();
-
-//		return true;
-//		return $this->show($projectId);
+		return redirect("projects.show", ['project' => $project->id])->with('success', 'Project created successfully.');
 	}
 
 	public function show(Project $project): Response
 	{
-		return view('projects.show', ['id' => $project->id, 'project' => $project]);
+		$tools = $project->tools();
+		//echo print_r($tools) . "<br>";
+		return view('projects.show', ['project' => $project, 'tools' => $tools]);
 	}
 
 	public function edit(Project $project): Response
