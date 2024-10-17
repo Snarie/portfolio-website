@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Responses\Response;
 use App\Models\Project;
-use App\Models\Tool;
 use App\Models\ProjectTool;
 use PDO;
 
@@ -91,7 +90,6 @@ class ProjectController extends Controller
 	public function show(Project $project): Response
 	{
 		$tools = $project->tools();
-		//echo print_r($tools) . "<br>";
 		return view('projects.show', ['project' => $project, 'tools' => $tools]);
 	}
 
