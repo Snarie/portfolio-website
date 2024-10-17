@@ -125,7 +125,6 @@ class Router
 	public function routeUrl(string $name, array $params = []): string {
 		if (!isset($this->namedRoutes[$name])) {
 			throw new Exception("No route named $name");
-			exit();
 		}
 		$url = $this->namedRoutes[$name];
 		foreach ($params as $key => $value) {
