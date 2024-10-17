@@ -39,6 +39,13 @@ require path('routes.php');
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
-// Invoke the Router's route() method, which matches the request's method and URI
-// to a registered route and calls the controller's function.
-$router->route($method, $uri);
+
+try {
+	// Invoke the Router's route() method, which matches the request's method and URI
+	// to a registered route and calls the controller's function.
+	$response = $router->route($method, $uri);
+	$response->send();
+} catch (Exception $e) {
+	http_response_code(500);
+	echo "500 Internal Server Error - " . $e->getMessage();
+}

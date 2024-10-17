@@ -2,15 +2,17 @@
 
 namespace App\Controllers;
 
+use App\Responses\Response;
+
 class HomeController extends Controller
 {
-	public function home()
+	public function home(): Response
 	{
-		return layout(view('home'));
+		return view('home');
 	}
 
-	public function  about()
+	public function  about(): Response
 	{
-		return layout(view('about'));
+		return view('about');
 	}
 }

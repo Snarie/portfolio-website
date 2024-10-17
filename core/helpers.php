@@ -1,6 +1,7 @@
 <?php
 
 use App\Responses\RedirectResponse;
+use App\Responses\HtmlResponse;
 use JetBrains\PhpStorm\NoReturn;
 
 /**
@@ -34,38 +35,7 @@ function path(string ...$segments): string
 	return __DIR__ . '/../' . implode('/', $segments);
 }
 
-/**
- * Generates the path towards the provided view and template
- *
- * @param string $viewPath The name of the view
- * @param string $templateName The name of the template
- * @return array In order the vie path and template path.
- */
-function view(string $viewPath, string $templateName = "default"): array {
-	$viewPath = path('app', 'views', $viewPath . '.view.php');
-	$templatePath = path('templates', $templateName . '.php');
-	return [$viewPath, $templatePath];
 
-}
-
-/**
- * Loads the specified view with it's template.
- *
- * @param array $paths The view and template paths
- * @param array $data The data passed through (e.g., userid)
- * @return bool True if template successfully loaded.
- */
-function layout(array $paths, array $data = []): bool {
-	$viewPath = $paths[0];
-	$filePath = $paths[1];
-	if (file_exists($filePath)) {
-		extract($data);
-
-		include $filePath;
-		return true;
-	}
-	return false;
-}
 
 function conn(): PDO {
 	static $pdo = null;
@@ -84,3 +54,29 @@ function redirect($routeName, $params = []): RedirectResponse
 	error_log($url);
 	return new RedirectResponse($url);
 }
+
+function view(string $viewString, array $data = []) {
+	$parts = explode('/', $viewString);
+	$view = array_pop($parts); // Gets the last part of the array
+
+	if (!empty($parts)) {
+		$template = array_pop($parts);
+	} else {
+		$template = 'default';
+	}
+
+	$view = str_replace('.', '/', $view);
+
+	$viewPath = path('app', 'views', $view . '.view.php');
+	$templatePath = path('templates', $template . '.php');
+
+	if (file_exists($templatePath) && file_exists($viewPath)) {
+		extract ($data);
+		ob_start(); // Start output buffering
+		include $templatePath;
+		$content = ob_get_clean();  // Capture clean buffer
+		return new HtmlResponse($content);
+	}
+	return new HtmlResponse('Page not found', 404);
+}
+

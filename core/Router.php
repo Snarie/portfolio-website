@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\Model;
+use App\Responses\Response;
+use App\Responses\ErrorResponse;
 
 /**
  * This class handles routing in the application.
@@ -132,12 +134,13 @@ class Router
 		return $url;
 	}
 
-	public function route(string $method, string $uri): bool {
+	public function route(string $method, string $uri): Response {
 		if (!isset($this->routes[$method])) {
-			throw new Exception("HTTP method $method not supported.");
+			return new ErrorResponse("HTTP method $method not supported.", 405); // Method not Allowed
 		}
 
 		foreach ($this->routes[$method] as $uriPattern => $action) {
+			// Pass if current route matches this defined routes pattern.
 			if (!preg_match($uriPattern, $uri, $matches)) {
 				continue;
 			}
@@ -146,12 +149,12 @@ class Router
 			list($controller, $function) = explode('@', $action);
 
 			if (!class_exists($controller)) {
-				throw new \Exception("Controller $controller not found");
+				return new ErrorResponse("Controller $controller not found", 404);
 			}
 
 			$controllerInstance = new $controller();
 			if (!method_exists($controllerInstance, $function)) {
-				throw new \Exception("Method $function not found in controller $controller");
+				return new ErrorResponse("Method $function not found in controller $controller", 404);
 			}
 
 			// Convert parameters based on expected types
@@ -165,16 +168,24 @@ class Router
 				$modelInstance = new $model();
 
 				if (!$modelInstance instanceof Model) {
-					throw new \Exception("Class {$model} does not extend Model");
+					continue;
 				}
 
 				$model = $modelInstance::find($value);
+				if(!$model) {
+					return new ErrorResponse("No project exists at this location", 404);
+				}
 				$params[$key] = $model;
 			}
 			//print_r($params);
-			call_user_func_array([$controllerInstance, $function], $params);
-			return true;
+			$response = call_user_func_array([$controllerInstance, $function], $params);
+
+			if (!$response instanceof Response) {
+				throw new Exception("Expected a Response object from the controller");
+			}
+			return $response;
 		}
-		throw new \Exception("Route not found");
+
+		return new ErrorResponse("Route not found for URI $uri", 404);
 	}
 }

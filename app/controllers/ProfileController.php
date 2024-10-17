@@ -2,12 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Responses\Response;
+
 class ProfileController extends Controller
 {
-	public function show(int $id)
+	public function show(int $id): Response
 	{
-		return layout(view('profile/show'), ['id' => $id]);
-		//return template('default.php', view('profile/show'), ['id' => $id]);
+		return view('profile.show', ['id' => $id]);
 	}
 
 }

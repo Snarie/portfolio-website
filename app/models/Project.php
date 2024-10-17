@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use PDO;
+
 class Project extends Model
 {
 	public string $name;
@@ -55,10 +57,16 @@ class Project extends Model
 
 		return false;
 	}
-	public static function find($id): Project {
+	public static function find($id): ?Project {
 		$instance = new Project();
-		$instance-> id = $id;
-		$result = $instance->readOne();
+		$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+		if ($id == '') return null;
+		$query = "SELECT * FROM $instance->table WHERE id = $id;";
+		$stmt = conn()->prepare($query);
+		$stmt->execute();
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		if(!$result) return null;
+		$instance->id = $result['id'];
 		$instance->name = $result['name'];
 		$instance->description = $result['description'];
 		$instance->image_link = $result['image_link'];

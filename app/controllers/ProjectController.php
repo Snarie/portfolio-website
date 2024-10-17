@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
-use PDO;
+use App\Responses\Response;
 use App\Models\Project;
+use PDO;
 
 class ProjectController extends Controller
 {
@@ -14,19 +15,19 @@ class ProjectController extends Controller
 		$this->conn = conn();
 	}
 
-	public function index()
+	public function index(): Response
 	{
-		return layout(view('projects/index'));
+		return view('projects.index');
 	}
 
-	public function create()
+	public function create(): Response
 	{
 		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
 		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return layout(view('projects/create', 'formpage'), ['tools' => $tools]);
+		return view('formpage/projects.create', ['tools' => $tools]);
 	}
 
-	public function store()
+	public function store(): Response
 	{
 		$name = $_POST['name'] ?? null;
 
@@ -90,7 +91,7 @@ class ProjectController extends Controller
 				':tool_id' => $toolId
 			]);
 		}
-		return redirect("projects.show", ['project' => $projectId])->with('success', 'Project created successfully.')->send();
+		return redirect("projects.show", ['project' => $projectId])->with('success', 'Project created successfully.');
 //		header("Location: /projects/$projectId");
 //		exit();
 
@@ -98,26 +99,24 @@ class ProjectController extends Controller
 //		return $this->show($projectId);
 	}
 
-	public function show(Project $project)
+	public function show(Project $project): Response
 	{
-		return layout(view('projects/show'), ['id' => $project->id, 'project' => $project]);
+		return view('projects.show', ['id' => $project->id, 'project' => $project]);
 	}
 
-	public function edit(Project $project)
+	public function edit(Project $project): Response
 	{
-		//return redirect('projects.index')->send();
-		//return redirect('projects.show', ['project' => $project->id])->with('success', 'created successfully')->send();
-		return layout(view('projects/edit'), ['id' => $project->id]);
+		return view('projects.edit', ['id' => $project->id]);
 	}
 
-	public function update(Project $project)
+	public function update(Project $project): Response
 	{
-		return $this->show($project);
+		return redirect('projects.index');
 	}
 
-	public function destroy(Project $project)
+	public function destroy(Project $project): Response
 	{
-		return $this->index();
+		return redirect('projects.index');
 	}
 
 }

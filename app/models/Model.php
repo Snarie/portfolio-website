@@ -43,5 +43,5 @@ abstract class Model
 		return false;
 	}
 
-	abstract public static function find($id): self;
+	abstract public static function find($id): ?self;
 }
