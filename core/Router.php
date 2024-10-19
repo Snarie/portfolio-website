@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Model;
+use App\Responses\Response;
+use App\Responses\ErrorResponse;
+
 /**
  * This class handles routing in the application.
  * It uses singleton pattern to ensure only 1 instance exist at one moment.
@@ -13,11 +17,19 @@ class Router
 	private static ?Router $router;
 
 	/**
-	 * @param array $routes An optional array of routes
+	 * @var array Stores the routes divided by HTTP methods
 	 */
-	private function __construct(private array $routes = []) {
+	private array $routes = [];
 
-	}
+	/**
+	 * @var array Stores named routes for easy URL generation.
+	 */
+	private array $namedRoutes = [];
+
+	/**
+	 * Private constructor to prevent direct instantiation.
+	 */
+	private function __construct() { }
 
 	/**
 	 * Retrieve single instance of Router
@@ -33,13 +45,56 @@ class Router
 	}
 
 	/**
+	 * Registers a route for a given HTTP method
+	 *
+	 * This method generates a URI pattern from a string by replacing placeholders with regex patterns
+	 * to capture parameters. It then registers this pattern under the specified route table.
+	 * Optionally a different name can be specified for easier reference.
+	 *
+	 * @param string $method The HTTP method (e.g., GET, POST)
+	 * @param string $uri The URI for the route
+	 * @param string $action The controller and method for handling the route
+	 * @param string|null $name The Optional name for route
+	 */
+	protected function register(string $method, string $uri, string $action, ?string $name = null): void {
+		// Convert placeholders with regex pattern
+		// Finds any parts withing "{...}", allowing default characters.
+		// It matches routes like /use/123/posts/456 and capture 123 as userId and 456 as postId.
+		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)}/', '(?P<\1>[a-zA-Z0-9_]+)', $uri);
+		$uriPattern = "#^" . $uriPattern . "$#";
+
+		$this->routes[$method][$uriPattern] = $action;
+
+		if (!$name) {
+			$name = $this->generateRouteName($action);
+		}
+		$this->namedRoutes[$name] = $uri;
+	}
+
+	/**
+	 * Generates a default name for a route based on the action string.
+	 *
+	 * This function formats the controller and method into a standardized route name by converting
+	 * the controller name into a more simple format and adding the method name at the end, split by a dot.
+	 *
+	 * @param string $action The "controller@method" string from which a route name will be generated.
+	 * @return string A route name formatted as "controller.method".
+	 */
+	private function generateRouteName(string $action): string {
+		list ($controller, $method) = explode('@', $action);
+		// Converts a name like “ExampleController” to “examples”.
+		$controllerName = strtolower(str_replace('Controller', 's', basename($controller)));
+		return $controllerName . '.' . $method;
+	}
+
+	/**
 	 * Registers a GET route
 	 *
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function get(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "GET");
+	public function get(string $uri, string $action, ?string $name = null): void {
+		$this->register("GET", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -48,8 +103,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function post(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "POST");
+	public function post(string $uri, string $action, ?string $name = null): void {
+		$this->register("POST", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -58,8 +113,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function put(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "PUT");
+	public function put(string $uri, string $action, ?string $name = null): void {
+		$this->register("PUT", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
@@ -68,113 +123,117 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function delete(string $uri, string $action): void {
-		$this->register($uri, $this->convertToAction($action), "DELETE");
+	public function delete(string $uri, string $action, ?string $name = null): void {
+		$this->register("DELETE", $uri, $this->convertToAction($action), $name);
 	}
 
 	/**
-	 * Converts the short action to it's full counterpart.
+	 * Converts the short action to its full counterpart.
 	 *
 	 * @param string $action The action as defined in routes.php
 	 * @return string Returns the action route to the action
 	 */
 	private function convertToAction(string $action): string {
-		return "controllers\\$action";
+		return "App\\Controllers\\$action";
 	}
+
 	/**
-	 * Registers a route for a given HTTP method
+	 * Generates a URL from the named route.
 	 *
-	 * @param string $uri The URI for the route
-	 * @param string $action The controller and method for handling the route
-	 * @param string $method The HTTP method (e.g., GET, POST)
-	 */
-	protected function register(string $uri, string $action, string $method): void {
-
-		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)\}/', '([0-9]+)', $uri);
-		if(!isset($this->routes[$method])) $this->routes[$method] = [];
-
-		list($controller, $function) = $this->extractAction($action);
-
-		$this->routes[$method][$uriPattern] = [
-			'controller' => $controller,
-			'method' => $function,
-			'params' => [] // to store dynamic if needed
-		];
-		/*$this->routes[$method][$uri] = [
-			'controller' => $controller,
-			'method' => $function
-		];*/
-	}
-
-
-	/**
-	 * Extracts the controller and method from the action
+	 * This function returns the URL pattern associated with the named route and
+	 * replaced placeholders with the provided parameters.
+	 * If no route with the given name exists, it throws an exception.
+	 * <br>
+	 * Example of `params`:
+	 *  * ['id' => $user] would make the var $user available as $id in the view.
 	 *
-	 * @param string $action The action string (e.g., "HomeController@index")
-	 * @param string $separator The separator between controller and method (default is '@')
-	 * @return array An array with in order the controller name, and the method name.
+	 * @param string $name The name of the route of which the URL is requested.
+	 * @param array $params Parameters to be used to map variables in the route.
+	 * @return string Returns the URL from the provided string version.
+	 * @throws Exception If no named route matches the given name.
 	 */
-	protected function extractAction(string $action, string $separator = '@'): array {
-		$sepPos = strpos($action, $separator);
-
-		$controller = substr($action, 0, $sepPos);
-
-		$function = substr($action, $sepPos + 1, strlen($action));
-
-		return [$controller, $function];
+	public function routeUrl(string $name, array $params = []): string {
+		if (!isset($this->namedRoutes[$name])) {
+			throw new Exception("No route named $name");
+		}
+		$url = $this->namedRoutes[$name];
+		foreach ($params as $key => $value) {
+			// replace variable parts of route with the correct value.
+			$url = str_replace("{" . $key . "}", urlencode($value), $url);
+		}
+		return $url;
 	}
 
 	/**
-	 * @param array $arr
+	 * Routes an HTTP request to the appropriate controller and method.
+	 *
+	 * This function examines matches the provided uri with the registered routes.
+	 * If a match is found, it instantiates the controller and calls the specified method.
+	 * If any part of the routing fails (e.g., controller not found) an ErrorResponse is returned.
+	 *
 	 * @param string $method The HTTP method (e.g., GET, POST)
-	 * @param string $uri The URI that must be found
-	 * @return array|null
+	 * @param string $uri The URI for the route.
+	 * @return Response Returns a Response from the controller if successful, otherwise returns a ErrorResponse.
 	 */
-	public function getRoute(array $arr, string $method, string $uri): ?array {
-		if (!isset($arr[$method])) {
-			return null; // HTTP method not found
+	public function route(string $method, string $uri): Response {
+		if (!isset($this->routes[$method])) {
+			return new ErrorResponse("HTTP method $method not supported.", 405); // Method not Allowed
 		}
 
-		foreach ($arr[$method] as $routePattern => $route) {
-			if (preg_match("#^$routePattern$#", $uri, $matches)) {
-				array_shift($matches); // Remove full match
-				$route['params'] = $matches; // Store match
-				return $route;
+		foreach ($this->routes[$method] as $uriPattern => $action) {
+			// Pass if current route matches this defined routes pattern.
+			if (!preg_match($uriPattern, $uri, $matches)) {
+				continue;
 			}
-		}
-		return null;
-	}
 
-	/**
-	 * Dispatch the request to the appropriate controller and function
-	 *
-	 * @param string $method The HTTP method (e.g., GET, POST)
-	 * @param string $uri The requested URI
-	 * @return bool Returns true if route found, false otherwise
-	 */
-	public function route(string $method, string $uri): bool {
-		$result = $this->getRoute($this->routes, $method, $uri);
-		if(!$result) abort("Route not found", 404);
+			// Filter out non-string keys to get named parameters from the URI.
+			$params = array_filter($matches, fn($key) => !is_int($key), ARRAY_FILTER_USE_KEY);
 
-		$controller = $result['controller'];
-		$function = $result['method'];
-		$params = $result['params'] ?? [];
+			// extract controller and function from action.
+			list($controller, $function) = explode('@', $action);
 
-		if(class_exists($controller)) {
+			if (!class_exists($controller)) {
+				return new ErrorResponse("Controller $controller not found", 404);
+			}
 
 			$controllerInstance = new $controller();
 
-			if(method_exists($controllerInstance, $function)) {
-
-				call_user_func_array([$controllerInstance, $function], $params);
-				return true;
-
-			} else {
-
-				abort("No method {$function} on class {$controller}", 500);
+			if (!method_exists($controllerInstance, $function)) {
+				return new ErrorResponse("Method $function not found in controller $controller", 404);
 			}
+
+			// Convert parameters based on expected types
+			foreach ($params as $key => $value) {
+				$model = "App\\Models\\" . ucfirst($key);
+
+				if (!class_exists($model)) {
+					continue;
+				}
+
+				$modelInstance = new $model();
+
+				if (!$modelInstance instanceof Model) {
+					continue;
+				}
+
+				// Attempt to find the model instance from the ID param.
+				$model = $modelInstance::find($value);
+				if(!$model) {
+					return new ErrorResponse("No project exists at this location", 404);
+				}
+				$params[$key] = $model;
+			}
+
+			// Execute the method from the controller
+			$response = call_user_func_array([$controllerInstance, $function], $params);
+
+			// Ensure the returned object is a Response instance.
+			if (!$response instanceof Response) {
+				return new ErrorResponse("Expected a Response object from the controller", 500);
+			}
+			return $response;
 		}
 
-		return false;
+		return new ErrorResponse("Route not found for URI $uri", 404);
 	}
 }
