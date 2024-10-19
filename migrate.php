@@ -1,7 +1,5 @@
 <?php
 
-require 'db.php'; // Contains your PDO connection logic
-
 class MigrationManager {
 	/**
 	 * @var PDO Stores the pdo connection
@@ -134,8 +132,9 @@ class MigrationManager {
 	}
 }
 
-$manager = new MigrationManager($conn);
+$manager = new MigrationManager(require 'db.php');
 
+// $argc is provided by the parameters in the terminal
 if ($argc > 1) {
 	switch ($argv[1]) {
 		case 'migrate':
