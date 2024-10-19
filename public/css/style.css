@@ -2,6 +2,7 @@
     --main-color: #eee;
     --main-color-2: #fff;
     --main-color-3: #bbb;
+    --main-color-o: rgba(120,120,120, 0.8);
     --secondary-color: #d31;
     --secondary-color-2: #f42;
     --secondary-color-o: rgba(200, 30, 30, 0.95);
@@ -14,6 +15,7 @@
     --main-color: #151515;
     --main-color-2: #1d1d1d;
     --main-color-3: #3c3c3c;
+    --main-color-o: rgba(50,50,50, 0.8);
     --text-color: #ddd;
     --text-color-2: #eee;
     --text-color-3: #fff;
@@ -57,3 +59,50 @@ body {
 .f-16 { font-size: 16px; }
 .f-18 { font-size: 18px; }
 .f-24 { font-size: 24px; }
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    margin: 0;
+    background-color: var(--main-color-o);
+    /*background-color: rgba(0,0,255,0.8);*/
+    align-items: center;
+    justify-content: center;
+    flex-direction: row; /* align children in a column*/
+}
+
+.popup.active {
+    display: grid;
+}
+.popup-content {
+    opacity: 1;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--main-color);
+}
+
+.popup .popup-canvas-container {
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+}
+button {
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 5px;
+    min-height: 32px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: var(--secondary-color-2);
+}

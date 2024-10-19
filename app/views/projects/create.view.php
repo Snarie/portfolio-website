@@ -1,6 +1,17 @@
 <H1>Create a New Project</H1>
 
+<div id="imagePopup" class="popup">
+    <div class="popup-content">
+        <div class="popup-canvas-container">
+            <canvas id="imageCanvas" class="popup-canvas"></canvas>
+        </div>
+        <button type="button" onclick="cropImage()" style="height: 25px">Crop Image</button>
+    </div>
+</div>
+
 <form action="/projects" method="post" class="grid gap-20">
+
+
 
     <article class="grid gap-10">
         <div>
@@ -13,10 +24,6 @@
             <label for="image" class="f-18">Select a Project Image (required)</label>
             <input type="file" id="imageInput" accept="image/*" required>
             <button type="button" onclick="openImagePopup()">Add Photo</button>
-        </div>
-        <div id="imagePopup" style="display: none;">
-            <canvas id="imageCanvas"></canvas>
-            <button type="button" onclick="cropImage()">Crop Image</button>
         </div>
         <div>
             <input type="hidden" name="cropped_image" id="croppedImageInput">

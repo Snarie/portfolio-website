@@ -9,6 +9,54 @@ let cropOffsetX = 0, cropOffsetY = 0; // For moving the crop area
 const aspectRatio = 16 / 9;
 let canvas = document.getElementById('imageCanvas');
 
+let imageWidth;
+let imageHeight;
+
+document.getElementById('imageInput').addEventListener('change', function() {
+    openImagePopup();
+})
+
+window.addEventListener('resize', function () {
+    if (originalImage) {
+        resizeCanvas();
+        resetCanvas();
+        initializeDefaultCropArea();
+    }
+})
+
+function getMousePos(canvas, evt) {
+    let rect = canvas.getBoundingClientRect();
+    return {
+        x: (evt.clientX - rect.left) * (canvas.width / rect.width),
+        y: (evt.clientY - rect.top) * (canvas.height / rect.height)
+    };
+}
+
+function resizeCanvas() {
+    let dif;
+    // inner width example: 1000px;
+    const maxWidth = Math.min(900, window.innerWidth*0.97);
+    const maxHeight = Math.min(600, window.innerHeight*0.8);
+    // 1000 / 500 => 2.0  1000 / 2000 => 0.5
+    dif = maxWidth / imageWidth;
+    if (imageHeight  * dif > maxHeight) {
+        dif = maxHeight / imageHeight;
+    }
+    /*if (img.height*1.2 > img.width) {
+        // height at least 1.2 times bigger than width
+        const base = Math.min(1000, window.innerHeight*0.9);
+        dif = base/img.height;
+    }
+    else {
+        const base = Math.min(500, window.innerWidth);
+        dif = base/img.width;
+    }*/
+
+    // alert('w: ' + maxWidth + ' h: ' + maxHeight + ' d: ' + dif + '\n' + 'nw: ' + dif*imageWidth + ' nh: ' + dif*imageHeight);
+    canvas.style.height = (dif*imageHeight).toString()+"px";
+    canvas.style.width = (dif*imageWidth).toString()+"px";
+}
+
 function openImagePopup() {
     const imageInput = document.getElementById('imageInput');
     if (imageInput.files && imageInput.files[0]) {
@@ -20,7 +68,13 @@ function openImagePopup() {
             }
 
             img.onload = function() {
+
+
                 canvas = document.getElementById('imageCanvas');
+                imageWidth = img.width;
+                imageHeight = img.height;
+                resizeCanvas();
+
                 canvas.width = img.width;
                 canvas.height = img.height;
                 originalImage = img;
@@ -28,8 +82,10 @@ function openImagePopup() {
                 // Draw the image and initial crop rectangle
                 resetCanvas();
                 initializeDefaultCropArea();
+                document.getElementById('imagePopup').classList.add('active');
 
-                document.getElementById('imagePopup').style.display = 'block';
+
+                // document.getElementById('imagePopup').style.display = 'flex';
 
                 // Add mouse events for selecting and moving the crop area
                 canvas.onmousedown = startAction;
@@ -54,8 +110,8 @@ function initializeDefaultCropArea() {
 
     cropStartX = (canvas.width - defaultCropWidth) / 2;
     cropStartY = (canvas.height - defaultCropHeight) / 2;
-    cropEndX = cropStartX + defaultCropWidth;
-    cropEndY = cropStartY + defaultCropHeight;
+    cropEndX = cropStartX + defaultCropWidth*0.9;
+    cropEndY = cropStartY + defaultCropHeight*0.9;
 
     drawCropArea();
 }
@@ -82,8 +138,9 @@ function drawCropArea() {
 
 function startAction(e) {
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    var pos = getMousePos(canvas, e);
+    const mouseX = pos.x;
+    const mouseY = pos.y;
 
     const minX = Math.min(cropStartX, cropEndX);
     const maxX = Math.max(cropStartX, cropEndX);
@@ -159,8 +216,9 @@ function shrinkToBorders() {
 function duringAction(e) {
     const canvas = document.getElementById('imageCanvas');
     const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+    var pos = getMousePos(canvas, e);
+    const mouseX = pos.x;
+    const mouseY = pos.y;
 
     if (isDragging) {
         handleDragging(mouseX, mouseY);
@@ -274,8 +332,9 @@ function cropImage() {
     // Compress the cropped image
     croppedImageDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.8);
 
+    document.getElementById('imagePopup').classList.remove('active');
     // Hide the popup and show the cropped image
-    document.getElementById('imagePopup').style.display = 'none';
+    // document.getElementById('imagePopup').style.display = 'none';
 
     // Set the cropped image as a hidden input to send it to the server
     document.getElementById('croppedImageInput').value = croppedImageDataUrl;
