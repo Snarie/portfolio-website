@@ -6,16 +6,18 @@ let isMovingCrop = false;
 let cropStartX, cropStartY, cropEndX, cropEndY;
 let cropOldX, cropOldY;
 let cropOffsetX = 0, cropOffsetY = 0; // For moving the crop area
-const aspectRatio = 16 / 9;
+const aspectRatio = 16 / 9; // fixed aspect ratio for crop area.
 let canvas = document.getElementById('imageCanvas');
 
 let imageWidth;
 let imageHeight;
 
+// Event listener to open the image popup when a file is selected.
 document.getElementById('imageInput').addEventListener('change', function() {
     openImagePopup();
 })
 
+// Event listener to resize canvas on window resize.
 window.addEventListener('resize', function () {
     if (originalImage) {
         resizeCanvas();
@@ -24,57 +26,53 @@ window.addEventListener('resize', function () {
     }
 })
 
-function getMousePos(canvas, evt) {
+// Calculate mouse position relative to canvas.
+function getMousePos(e) {
     let rect = canvas.getBoundingClientRect();
     return {
-        x: (evt.clientX - rect.left) * (canvas.width / rect.width),
-        y: (evt.clientY - rect.top) * (canvas.height / rect.height)
+        x: (e.clientX - rect.left) * (canvas.width / rect.width),
+        y: (e.clientY - rect.top) * (canvas.height / rect.height)
     };
 }
 
+// Function to resize the canvas based on window size and dimensions.
 function resizeCanvas() {
-    let dif;
-    // inner width example: 1000px;
     const maxWidth = Math.min(900, window.innerWidth*0.97);
     const maxHeight = Math.min(600, window.innerHeight*0.8);
-    // 1000 / 500 => 2.0  1000 / 2000 => 0.5
-    dif = maxWidth / imageWidth;
-    if (imageHeight  * dif > maxHeight) {
-        dif = maxHeight / imageHeight;
+    // Calculate width difference ratio
+    let ratio = maxWidth / imageWidth;
+    if (imageHeight  * ratio > maxHeight) {
+        // Adjust the ratio based on height if needed.
+        ratio = maxHeight / imageHeight;
     }
-    /*if (img.height*1.2 > img.width) {
-        // height at least 1.2 times bigger than width
-        const base = Math.min(1000, window.innerHeight*0.9);
-        dif = base/img.height;
-    }
-    else {
-        const base = Math.min(500, window.innerWidth);
-        dif = base/img.width;
-    }*/
 
-    // alert('w: ' + maxWidth + ' h: ' + maxHeight + ' d: ' + dif + '\n' + 'nw: ' + dif*imageWidth + ' nh: ' + dif*imageHeight);
-    canvas.style.height = (dif*imageHeight).toString()+"px";
-    canvas.style.width = (dif*imageWidth).toString()+"px";
+    // set size of the container of the canvas.
+    canvas.style.height = (ratio*imageHeight).toString()+"px";
+    canvas.style.width = (ratio*imageWidth).toString()+"px";
 }
 
+// Opens the image popup and sets up canvas.
 function openImagePopup() {
     const imageInput = document.getElementById('imageInput');
+    // Check if it actually contains a file.
     if (imageInput.files && imageInput.files[0]) {
+        // create a reader to grab the image.
         const reader = new FileReader();
         reader.onload = function(e) {
+            // create a new Image container for the file
             const img = new Image();
             if (typeof e.target.result === 'string') {
                 img.src = e.target.result;
             }
 
             img.onload = function() {
-
-
                 canvas = document.getElementById('imageCanvas');
+                // Save the image size for resizing the canvas, while keeping the aspect ratio.
                 imageWidth = img.width;
                 imageHeight = img.height;
                 resizeCanvas();
 
+                // set the size of the inside of the canvas.
                 canvas.width = img.width;
                 canvas.height = img.height;
                 originalImage = img;
@@ -84,8 +82,6 @@ function openImagePopup() {
                 initializeDefaultCropArea();
                 document.getElementById('imagePopup').classList.add('active');
 
-
-                // document.getElementById('imagePopup').style.display = 'flex';
 
                 // Add mouse events for selecting and moving the crop area
                 canvas.onmousedown = startAction;
@@ -97,6 +93,7 @@ function openImagePopup() {
     }
 }
 
+// Initializes the default crop area based on image size.
 function initializeDefaultCropArea() {
     let defaultCropWidth;
     let defaultCropHeight;
@@ -108,14 +105,16 @@ function initializeDefaultCropArea() {
         defaultCropWidth = defaultCropHeight * aspectRatio;
     }
 
-    cropStartX = (canvas.width - defaultCropWidth) / 2;
-    cropStartY = (canvas.height - defaultCropHeight) / 2;
-    cropEndX = cropStartX + defaultCropWidth*0.9;
-    cropEndY = cropStartY + defaultCropHeight*0.9;
+    // Crop area is 90% of maximum size
+    cropStartX = (canvas.width - defaultCropWidth * 0.9) / 2;
+    cropStartY = (canvas.height - defaultCropHeight * 0.9) / 2;
+    cropEndX = cropStartX + defaultCropWidth * 0.9;
+    cropEndY = cropStartY + defaultCropHeight * 0.9;
 
     drawCropArea();
 }
 
+// Resets the canvas, clears previous drawings, and draws a new area.
 function resetCanvas() {
     const ctx = canvas.getContext('2d');
 
@@ -123,39 +122,36 @@ function resetCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(originalImage, 0, 0);
 
-    // Redraw the crop rectangle
     drawCropArea();
 }
 
+// Draws the crop rectangle on the canvas
 function drawCropArea() {
     const ctx = canvas.getContext('2d');
-
-    // Draw the cropping rectangle
     ctx.strokeStyle = 'red';
     ctx.lineWidth = 2;
     ctx.strokeRect(cropStartX, cropStartY, cropEndX - cropStartX, cropEndY - cropStartY);
 }
 
+// Starts the action for dragging or moving the crop area based on mouse position.
 function startAction(e) {
-    const rect = canvas.getBoundingClientRect();
-    var pos = getMousePos(canvas, e);
-    const mouseX = pos.x;
-    const mouseY = pos.y;
+    const pos = getMousePos(e);
 
     const minX = Math.min(cropStartX, cropEndX);
     const maxX = Math.max(cropStartX, cropEndX);
     const minY = Math.min(cropStartY, cropEndY);
     const maxY = Math.max(cropStartY, cropEndY);
 
-    if (mouseX > minX && mouseX < maxX && mouseY > minY && mouseY < maxY) {
+    // check if mouse is inside the rectangle.
+    if (pos.x > minX && pos.x < maxX && pos.y > minY && pos.y < maxY) {
         conditionalSwap();
         isMovingCrop = true;
-        cropOffsetX = mouseX - cropStartX;
-        cropOffsetY = mouseY - cropStartY;
+        cropOffsetX = pos.x - cropStartX;
+        cropOffsetY = pos.y - cropStartY;
     } else {
         // Start a new crop area
-        cropOldX = mouseX;
-        cropOldY = mouseY;
+        cropOldX = pos.x;
+        cropOldY = pos.y;
         isDragging = true;
         startedDragging = false;
         isMovingCrop = false;
@@ -168,13 +164,16 @@ function cropWidth() {
 function cropHeight() {
     return Math.abs(cropEndY - cropStartY);
 }
+// expected width when the crop height is defined.
 function cropExpectedWidth() {
     return cropHeight() * aspectRatio;
 }
+// expected height when the crop width is defined.
 function cropExpectedHeight() {
     return cropWidth() / aspectRatio;
 }
 
+// Shrink the specified vertex based its counterpart.
 function shrinkOtherDimension(vertical) {
     if (vertical) {
         let expectedHeight = cropExpectedHeight();
@@ -187,6 +186,8 @@ function shrinkOtherDimension(vertical) {
     }
 
 }
+// Check if the borders of the crop area are inside bounds,
+// and shrink them if needed.
 function shrinkToBorders() {
     if (cropEndX > cropStartX) {
         if (cropEndX > canvas.width) {
@@ -213,23 +214,21 @@ function shrinkToBorders() {
     }
 }
 
+// Call the function based on mouse position and previous action.
 function duringAction(e) {
-    const canvas = document.getElementById('imageCanvas');
-    const rect = canvas.getBoundingClientRect();
-    var pos = getMousePos(canvas, e);
-    const mouseX = pos.x;
-    const mouseY = pos.y;
+    const pos = getMousePos(e);
 
     if (isDragging) {
-        handleDragging(mouseX, mouseY);
+        handleDragging(pos.x, pos.y);
     } else if (isMovingCrop) {
-        handleMoving(mouseX, mouseY);
+        handleMoving(pos.x, pos.y);
     }
 
     // Redraw the canvas, and the crop area after any movement
     resetCanvas();
 }
 
+// draws a new square size is determined by the horizontal vertex.
 function handleDragging(mouseX, mouseY) {
     if (startedDragging === false) {
         cropStartX = cropOldX;
@@ -239,17 +238,19 @@ function handleDragging(mouseX, mouseY) {
     createSquare(mouseX, mouseY);
 }
 
+// moves the square over based on the pixels moved from starting offset.
 function handleMoving(mouseX, mouseY) {
-    // Move the existing crop area
+    // Move the existing crop area.
     const newCropStartX = mouseX - cropOffsetX;
     const newCropStartY = mouseY - cropOffsetY;
 
-    // Calculate the new crop end coordinates while keeping the 16:9 aspect ratio
+    // Calculate the new crop end coordinates while keeping the 16:9 aspect ratio.
     const cropWidth = cropEndX - cropStartX;
     const cropHeight = cropEndY - cropStartY;
     cropEndX = newCropStartX + cropWidth;
     cropEndY = newCropStartY + cropHeight;
 
+    // make sure the area can't move outside the borders.
     if (newCropStartX < 0) {
         cropEndX -= newCropStartX;
         cropStartX = 0;
@@ -260,7 +261,6 @@ function handleMoving(mouseX, mouseY) {
     } else {
         cropStartX = newCropStartX;
     }
-
     if (newCropStartY < 0) {
         cropEndY -= newCropStartY;
         cropStartY = 0;
@@ -273,6 +273,7 @@ function handleMoving(mouseX, mouseY) {
     }
 }
 
+// Swaps the end and start coordinates if start is a higher number.
 function conditionalSwap() {
     if (cropStartX > cropEndX) {
         const temp = cropStartX;
@@ -285,6 +286,7 @@ function conditionalSwap() {
         cropEndY = temp;
     }
 }
+// create the new square based on the new x and y position.
 function createSquare(newX, newY) {
     const cropWidth = newX - cropStartX;
     let cropHeight = Math.abs(cropWidth / aspectRatio);
@@ -296,6 +298,7 @@ function createSquare(newX, newY) {
     shrinkToBorders();
 }
 
+// Finishes the action and resets variables.
 function endAction() {
     if (startedDragging === false && isDragging === true) {
         createSquare(cropOldX, cropOldY)
@@ -304,12 +307,10 @@ function endAction() {
     startedDragging = false;
     isMovingCrop = false;
 
-
-    // conditionalSwap();
-    // Redraw the crop area after the action ends
     resetCanvas();
 }
 
+// Creates a final image after cropping to the defined square.
 function cropImage() {
 
     // Calculate the final crop width and height
@@ -333,9 +334,7 @@ function cropImage() {
     croppedImageDataUrl = croppedCanvas.toDataURL('image/jpeg', 0.8);
 
     document.getElementById('imagePopup').classList.remove('active');
-    // Hide the popup and show the cropped image
-    // document.getElementById('imagePopup').style.display = 'none';
 
-    // Set the cropped image as a hidden input to send it to the server
+    // Set the cropped image as a hidden input to send it to the server.
     document.getElementById('croppedImageInput').value = croppedImageDataUrl;
 }
