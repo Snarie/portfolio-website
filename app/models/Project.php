@@ -6,9 +6,11 @@ class Project extends Model
 {
 	public string $name;
 	public ?string $image_link;
+	public ?string $github_link;
 	public ?string $description;
 	public ?string $start_date;
 	public ?string $end_date;
+
 
 	/**
 	 * Constructor for the Project model.
