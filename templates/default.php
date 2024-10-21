@@ -6,7 +6,7 @@
 </head>
 <body>
 <?php include path('layout', 'header.php');?>
-<main>
+<main class="grid">
 	<?php include $viewPath;?>
 </main>
 <?php include path('layout', 'footer.php');?>

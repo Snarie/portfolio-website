@@ -8,9 +8,7 @@
 <body>
 <?php include path('layout', 'header.php');?>
 <main>
-	<section class="form-container">
-		<?php include $viewPath;?>
-	</section>
+    <?php include $viewPath;?>
 </main>
 <?php include path('layout', 'footer.php');?>
 </body>
