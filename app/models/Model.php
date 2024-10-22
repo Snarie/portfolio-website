@@ -23,9 +23,10 @@ abstract class Model
 	 *
 	 * @return array An array of model instances.
 	 */
-	public function all(): array
+	public static function all(): array
 	{
-		$query = "SELECT * FROM " . $this->table;
+		$instance = new static();
+		$query = "SELECT * FROM $instance->table";
 		$stmt = conn()->prepare($query);
 		$stmt->execute();
 		$stmt->setFetchMode(PDO::FETCH_CLASS, static::class);

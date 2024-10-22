@@ -1,5 +1,14 @@
+<?php
+if (!isset($tools) || !is_array($tools)) {
+	echo "Invalid data provided";
+	return;
+}
+?>
+
 <section>
-    <h1>Create a New Project</h1>
+    <article>
+        <h1>Create a New Project</h1>
+    </article>
 </section>
 
 <section class="form-container">
@@ -66,7 +75,7 @@
                 <select id="tools" name="tools[]" multiple>
 					<?php
 					foreach ($tools as $tool) {
-						echo "<option value=\"".$tool['id']."\">".htmlspecialchars($tool['name'])."</option>";
+						echo "<option value=\"".$tool->id."\">".htmlspecialchars($tool->name)."</option>";
 					}
 					?>
                 </select>

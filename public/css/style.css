@@ -45,12 +45,7 @@ article {
 article div {
     display: block;
     width: 100%;
-
 }
-
-
-
-
 
 h1 {
     display: block;
@@ -106,7 +101,6 @@ h3 {
     font-weight: bold;
     padding: 10px 24px;
     font-size: 30px;
-    /*width: 400px;*/
     text-align: center;
     background-color: var(--secondary-color);
     color: var(--text-color-2);

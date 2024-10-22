@@ -32,7 +32,8 @@ if (!isset($tools) || !is_array($tools)) {
 		<a href="<?=$project->github_link?>" class="large-button all-upper">project link</a>
 	</article>
 </section>
-<section>
+
+<section >
 	<article>
 		<figure class="project-image-container">
 			<img src="/<?=$project->image_link?>" alt="Project Image" class="image">
@@ -44,6 +45,7 @@ if (!isset($tools) || !is_array($tools)) {
 		<p><?=nl2br($project->description)?></p>
 	</article>
 </section>
+
 <section>
 	<article>
 		<?php

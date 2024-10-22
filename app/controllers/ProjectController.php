@@ -5,26 +5,19 @@ namespace App\Controllers;
 use App\Responses\Response;
 use App\Models\Project;
 use App\Models\ProjectTool;
-use PDO;
+use App\Models\Tool;
 
 class ProjectController extends Controller
 {
-	private PDO $conn;
-
-	public function __construct()
-	{
-		$this->conn = conn();
-	}
-
 	public function index(): Response
 	{
-		return view('projects.index');
+		$projects = Project::all();
+		return view('projects.index', ['projects' => $projects]);
 	}
 
 	public function create(): Response
 	{
-		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
-		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$tools = Tool::all();
 		return view('formpage/projects.create', ['tools' => $tools]);
 	}
 
