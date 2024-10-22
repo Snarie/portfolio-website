@@ -2,7 +2,7 @@
 <html>
 <head>
 	<?php include path('layout', 'head.php');?>
-	<link rel="stylesheet" href="../public/css/form.css">
+	<link rel="stylesheet" href="/public/css/form.css">
 	<title>Document</title>
 </head>
 <body>
