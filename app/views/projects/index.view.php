@@ -30,7 +30,7 @@ if (!isset($projects) || !is_array($projects)) {
                         <h2 style="text-align: left; height: 30%"><?=$project->name?></h2>
                         <h3 style="text-align: left; height: 30%"><?=$project->description?></h3>
                         <!--TODO: create redirect to project itself-->
-                        <a href="" class="button">project link</a>
+                        <a href="/projects/<?=$project->id?>" class="button">project link</a>
                     </div>
                 </article>
             </section><?php
