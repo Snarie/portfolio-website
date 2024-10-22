@@ -25,10 +25,10 @@ if (!isset($projects) || !is_array($projects)) {
                         <img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
                     </figure>
                 </article>
-                <article>
-                    <div style="display: inline-block">
-                        <h2 style="text-align: left; height: 30%"><?=$project->name?></h2>
-                        <h3 style="text-align: left; height: 30%"><?=$project->description?></h3>
+                <article style="align-items: center">
+                    <div class="grid gap-20">
+                        <h2 style="text-align: left"><?=$project->name?></h2>
+                        <h3 style="text-align: left"><?=$project->description?><br> wefwe<br> wewefw</h3>
                         <!--TODO: create redirect to project itself-->
                         <a href="/projects/<?=$project->id?>" class="button">project link</a>
                     </div>
