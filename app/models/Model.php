@@ -84,6 +84,34 @@ abstract class Model
 		return $stmt->fetch() ?: null;
 	}
 
+	/**
+	 * Updates the record from the database to the provided data.
+	 *
+	 * @param array $data Data to create a record.
+	 * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
+	 */
+	public function update(array $data): bool
+		$placeholders = array_map(fn($field) => "$field = ?", $fields);
+		$values = array_values($data);
+		$values[] = $this->id; // add ID to the values array for the WHERE
+
+		$sql = "UPDATE $this->table SET " . implode(', ', $placeholders) . "WHERE id = ?";
+		$stmt = conn()->prepare($sql);
+		return $stmt->execute($values);
+	}
+
+	/**
+	 * Deletes the record from the database.
+	 *
+	 * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
+	 */
+	public function delete(): bool
+	{
+		$sql = "DELETE FROM $this->table WHERE id = ?";
+		$stmt = conn()->prepare($sql);
+		return $stmt->execute([$this->id]);
+	}
+
 	// =====================================
 	// SQL Relationship Functions
 	// =====================================
