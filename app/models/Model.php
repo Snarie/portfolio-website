@@ -23,9 +23,10 @@ abstract class Model
 	 *
 	 * @return array An array of model instances.
 	 */
-	public function all(): array
+	public static function all(): array
 	{
-		$query = "SELECT * FROM " . $this->table;
+		$instance = new static();
+		$query = "SELECT * FROM $instance->table";
 		$stmt = conn()->prepare($query);
 		$stmt->execute();
 		$stmt->setFetchMode(PDO::FETCH_CLASS, static::class);
@@ -81,6 +82,36 @@ abstract class Model
 		$stmt->execute([$id]);
 		$stmt->setFetchMode(PDO::FETCH_INTO, $instance);
 		return $stmt->fetch() ?: null;
+	}
+
+	/**
+	 * Updates the record from the database to the provided data.
+	 *
+	 * @param array $data Data to create a record.
+	 * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
+	 */
+	public function update(array $data): bool
+	{
+		$fields = array_keys($data);
+		$placeholders = array_map(fn($field) => "$field = ?", $fields);
+		$values = array_values($data);
+		$values[] = $this->id; // add ID to the values array for the WHERE clause.
+
+		$sql = "UPDATE $this->table SET " . implode(', ', $placeholders) . "WHERE id = ?";
+		$stmt = conn()->prepare($sql);
+		return $stmt->execute($values);
+	}
+
+	/**
+	 * Deletes the record from the database.
+	 *
+	 * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
+	 */
+	public function delete(): bool
+	{
+		$sql = "DELETE FROM $this->table WHERE id = ?";
+		$stmt = conn()->prepare($sql);
+		return $stmt->execute([$this->id]);
 	}
 
 	// =====================================

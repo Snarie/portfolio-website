@@ -5,26 +5,19 @@ namespace App\Controllers;
 use App\Responses\Response;
 use App\Models\Project;
 use App\Models\ProjectTool;
-use PDO;
+use App\Models\Tool;
 
 class ProjectController extends Controller
 {
-	private PDO $conn;
-
-	public function __construct()
-	{
-		$this->conn = conn();
-	}
-
 	public function index(): Response
 	{
-		return view('projects.index');
+		$projects = Project::all();
+		return view('projects.index', ['projects' => $projects]);
 	}
 
 	public function create(): Response
 	{
-		$stmt = $this->conn->query("SELECT id, name FROM tools ORDER BY name");
-		$tools = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$tools = Tool::all();
 		return view('formpage/projects.create', ['tools' => $tools]);
 	}
 
@@ -51,23 +44,7 @@ class ProjectController extends Controller
 
 		if (isset($_POST['cropped_image'])) {
 			$croppedImage = $_POST['cropped_image'];
-
-			$croppedImage = str_replace('data:image/jpeg;base64,' , '', $croppedImage);
-			$croppedImage = str_replace(' ', '+', $croppedImage);
-
-			$decodedImage = base64_decode($croppedImage);
-
-			$imageFileName = uniqid() . '.jpg';
-			$imagePath = 'public/uploads/projects/' . $imageFileName;
-			$fileFullPath = path('public', 'uploads', 'projects', $imageFileName);
-
-			//$fileFullPath = __DIR__ . '/../public/' . $imagePath;
-
-			if (!file_exists(dirname($fileFullPath))) {
-				mkdir(dirname($fileFullPath), 0777, true);
-			}
-
-			file_put_contents($fileFullPath, $decodedImage);
+			$imagePath = saveImage($croppedImage);
 		}
 
 		$project = Project::create([
@@ -95,12 +72,50 @@ class ProjectController extends Controller
 
 	public function edit(Project $project): Response
 	{
-		return view('projects.edit', ['id' => $project->id]);
+		$tools = Tool::all();
+		return view('formpage/projects.edit', ['project' => $project, 'tools' => $tools]);
 	}
 
 	public function update(Project $project): Response
 	{
-		return redirect('projects.index');
+		$name = $_POST['name'] ?? null;
+
+		$description = $_POST['description'] ?? null;
+
+		$start_date = $_POST['start_date'] ?? null;
+
+		$end_date = $_POST['end_date'] ?? null;
+
+		$toolIds = $_POST['tools'] ?? [];
+
+		$imagePath = null;
+
+		if (isset($_POST['cropped_image'])) {
+			$croppedImage = $_POST['cropped_image'];
+			$imagePath = saveImage($croppedImage);
+		}
+
+		/** @var ProjectTool $projectTool */
+		foreach ($project->projectTools() as $projectTool) {
+			$projectTool->delete();
+		}
+
+		$project->update([
+			'name' => $name,
+			'description' => $description,
+			'start_date' => $start_date,
+			'end_date' => $end_date,
+			'image_link' => $imagePath
+		]);
+
+		foreach ($toolIds as $toolId) {
+			ProjectTool::create([
+				'project_id' => $project->id,
+				'tool_id' => $toolId
+			]);
+		}
+
+		return redirect("projects.show", ['project' => $project->id])->with('update', 'Project updated successfully.');
 	}
 
 	public function destroy(Project $project): Response
