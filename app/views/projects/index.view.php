@@ -21,7 +21,7 @@ if (!isset($projects) || !is_array($projects)) {
             <section class="grid column-2 gap-10 mw-1400px">
                 <article>
                     <figure class="project-image-container">
-			            <img src="/<?=$project->image_link?>" alt="Project Image" class="image">
+			            <img src="<?=$project->image_link?>" alt="Project Image" class="image">
                         <img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
                     </figure>
                 </article>

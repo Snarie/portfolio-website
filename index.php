@@ -39,6 +39,9 @@ require path('routes.php');
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
+if ($method === 'POST' && isset($_POST['_method'])) {
+	$method = strtoupper($_POST['_method']);
+}
 
 try {
 	// Invoke the Router's route() method, which matches the request's method and URI

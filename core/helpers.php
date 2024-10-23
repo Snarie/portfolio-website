@@ -110,3 +110,21 @@ function view(string $viewString, array $data = []): HtmlResponse
 	return new HtmlResponse('Page not found', 404);
 }
 
+function saveImage($formImage): string {
+	$formImage = str_replace('data:image/jpeg;base64,' , '', $formImage);
+	$formImage = str_replace(' ', '+', $formImage);
+
+	$decodedImage = base64_decode($formImage);
+
+	$imageFileName = uniqid() . '.jpg';
+
+	$privateImagePath = path('public', 'uploads', 'projects', $imageFileName);
+	if (!file_exists(dirname($privateImagePath))) {
+		mkdir(dirname($privateImagePath), 0777, true);
+	}
+
+	file_put_contents($privateImagePath, $decodedImage);
+
+	// publicImagePath
+	return '/public/uploads/projects/' . $imageFileName;
+}

@@ -36,7 +36,7 @@ if (!isset($tools) || !is_array($tools)) {
 <section >
 	<article>
 		<figure class="project-image-container">
-			<img src="/<?=$project->image_link?>" alt="Project Image" class="image">
+			<img src="<?=$project->image_link?>" alt="Project Image" class="image">
 			<img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
 		</figure>
 	</article>
