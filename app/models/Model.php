@@ -91,9 +91,11 @@ abstract class Model
 	 * @return bool <b>TRUE</b> on success or <b>FALSE</b> on failure.
 	 */
 	public function update(array $data): bool
+	{
+		$fields = array_keys($data);
 		$placeholders = array_map(fn($field) => "$field = ?", $fields);
 		$values = array_values($data);
-		$values[] = $this->id; // add ID to the values array for the WHERE
+		$values[] = $this->id; // add ID to the values array for the WHERE clause.
 
 		$sql = "UPDATE $this->table SET " . implode(', ', $placeholders) . "WHERE id = ?";
 		$stmt = conn()->prepare($sql);
