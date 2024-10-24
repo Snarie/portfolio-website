@@ -44,7 +44,7 @@ class ProjectController extends Controller
 
 		if (isset($_POST['cropped_image'])) {
 			$croppedImage = $_POST['cropped_image'];
-			$imagePath = saveImage($croppedImage);
+			$imagePath = saveImage($croppedImage, 16/9);
 		}
 
 		$project = Project::create([
@@ -92,7 +92,7 @@ class ProjectController extends Controller
 
 		if (isset($_POST['cropped_image'])) {
 			$croppedImage = $_POST['cropped_image'];
-			$imagePath = saveImage($croppedImage);
+			$imagePath = saveImage($croppedImage, 16/9);
 		}
 
 		/** @var ProjectTool $projectTool */

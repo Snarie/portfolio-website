@@ -110,7 +110,23 @@ function view(string $viewString, array $data = []): HtmlResponse
 	return new HtmlResponse('Page not found', 404);
 }
 
-function saveImage($formImage): string {
+/**
+ * Saves a base64-encoded image to the server and returns its public URL.
+ *
+ * The function decodes a base64-encoded JPEG image string and stores it as a file in the /public/uploads directory.
+ * The image is assigned a unique name to avoid overwriting. An optional aspect ratio (e.g., 16/9) can be provided to
+ * crop the image to content from the center. Otherwise, the image is saved as is. If the directorie does not exist yet,
+ * they will be created.
+ *
+ * <br>Example usage of $aspectRatio:
+ *  * 16/9 would crop the image to this aspect ratio.
+ *
+ * @param string $formImage The base64-encoded image string, prefixed with 'data:image/jpeg;base64'.
+ * @param float|null $aspectRatio The desired ratio to crop the image to, if null, the image won't be cropped.
+ * @return string Returns the public URL path to the saved image.
+ */
+function saveImage(string $formImage, ?float $aspectRatio = null): string {
+	// Remove image prefix and replace spaces with pluses.
 	$formImage = str_replace('data:image/jpeg;base64,' , '', $formImage);
 	$formImage = str_replace(' ', '+', $formImage);
 
@@ -118,13 +134,63 @@ function saveImage($formImage): string {
 
 	$imageFileName = uniqid() . '.jpg';
 
+	// Generate private server path for storing the image.
 	$privateImagePath = path('public', 'uploads', 'projects', $imageFileName);
+
 	if (!file_exists(dirname($privateImagePath))) {
+		// Create the directory if it does not exist. (recursive to generate nested files)
 		mkdir(dirname($privateImagePath), 0777, true);
 	}
 
-	file_put_contents($privateImagePath, $decodedImage);
+	$imageResource = imagecreatefromstring($decodedImage);
 
-	// publicImagePath
+	// Check if the image needs to be cropped
+	if ($aspectRatio !== null && $imageResource !== false) {
+		// Get original image width+height
+		$originalWidth = imagesx($imageResource);
+		$originalHeight = imagesy($imageResource);
+
+		$expectedHeight = $originalWidth / $aspectRatio;
+
+		if ($expectedHeight > $originalHeight) {
+			$expectedHeight = $originalHeight;
+			$expectedWidth = $originalHeight * $aspectRatio;
+		}
+		else {
+			$expectedWidth = $originalWidth;
+		}
+
+		// Crop Start coordinates
+		$cropX = ($originalWidth - $expectedWidth) / 2;
+		$cropY = ($originalHeight - $expectedHeight) / 2;
+
+		// Create a new image with expected dimensions.
+		$croppedImage = imagecreatetruecolor($expectedWidth, $expectedHeight);
+
+		imagecopyresampled
+			(// (empty) Destination image to copy to.
+			$croppedImage,
+			// Source image to copy from.
+			$imageResource,
+			// Top left of image.
+			0,0,
+			// Coordinates where cropping starts.
+			$cropX, $cropY,
+			// Coordinates of the destination image.
+			$expectedWidth, $expectedHeight,
+			// Width and height of the source image to copy. Same as destination size for cropping.
+			$expectedWidth, $expectedHeight
+		);
+
+		$imageResource = $croppedImage;
+	}
+
+	// save image on the server at the specified path.
+	imagejpeg($imageResource, $privateImagePath);
+
+	// destroy the image for memory.
+	imagedestroy($imageResource);
+
+	// Returns the public URL path for the saved image.
 	return '/public/uploads/projects/' . $imageFileName;
 }
