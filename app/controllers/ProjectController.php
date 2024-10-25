@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 
+use App\Requests\StoreProjectRequest;
 use App\Responses\Response;
 use App\Models\Project;
 use App\Models\ProjectTool;
 use App\Models\Tool;
+use App\Requests\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -21,41 +23,23 @@ class ProjectController extends Controller
 		return view('formpage/projects.create', ['tools' => $tools]);
 	}
 
-	public function store(): Response
+	public function store(StoreProjectRequest $request): Response
 	{
-		$name = $_POST['name'] ?? null;
-
-		$description = $_POST['description'] ?? null;
-
-		$start_date = $_POST['start_date'] ?? null;
-
-		$end_date = $_POST['end_date'] ?? null;
-
-		$tools = $_POST['tools'] ?? [];
-
-		if (isset($_POST['disable_end_date'])) $end_date = null;
-
-		if (!$name || !$description || !$start_date) {
-			// Redirect back to the create form if required fields are missing
-			return redirect('projects.create');
+		if(!$request->validate()) {
+			return redirect('projects.create')->with('errors', $request->getErrors());
 		}
 
-		$imagePath = null;
-
-		if (isset($_POST['cropped_image'])) {
-			$croppedImage = $_POST['cropped_image'];
-			$imagePath = saveImage($croppedImage, 16/9);
-		}
+		$imagePath = saveImage($request->get('cropped_image'), 16/9);
 
 		$project = Project::create([
-			'name' => $name,
-			'description' => $description,
-			'start_date' => $start_date,
-			'end_date' => $end_date,
+			'name' => $request->get('name'),
+			'description' => $request->get('description'),
+			'start_date' => $request->get('start_date'),
+			'end_date' => $request->get('end_date'),
 			'image_link' => $imagePath
 		]);
 
-		foreach ($tools as $toolId) {
+		foreach ($request->get('tools') as $toolId) {
 			ProjectTool::create([
 				'project_id' => $project->id,
 				'tool_id' => $toolId
@@ -76,7 +60,7 @@ class ProjectController extends Controller
 		return view('formpage/projects.edit', ['project' => $project, 'tools' => $tools]);
 	}
 
-	public function update(Project $project): Response
+	public function update(UpdateProjectRequest $request, Project $project): Response
 	{
 		$name = $_POST['name'] ?? null;
 

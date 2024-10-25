@@ -2,6 +2,7 @@
 
 use app\controllers\Controller;
 use App\Models\Model;
+use App\Requests\Request;
 use App\Responses\Response;
 use App\Responses\ErrorResponse;
 
@@ -55,16 +56,17 @@ class Router
 	 * @param string $method The HTTP method (e.g., GET, POST)
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method for handling the route
+	 * @param string|null $requestName Optionally fully qualified class name of the request
 	 * @param string|null $name The Optional name for route
 	 */
-	protected function register(string $method, string $uri, string $action, ?string $name = null): void {
+	protected function register(string $method, string $uri, string $action, ?string $requestName = null, ?string $name = null): void {
 		// Convert placeholders with regex pattern
 		// Finds any parts withing "{...}", allowing default characters.
 		// It matches routes like /use/123/posts/456 and capture 123 as userId and 456 as postId.
 		$uriPattern = preg_replace('/\{([a-zA-Z0-9_]+)}/', '(?P<\1>[a-zA-Z0-9_]+)', $uri);
 		$uriPattern = "#^" . $uriPattern . "$#";
 
-		$this->routes[$method][$uriPattern] = $action;
+		$this->routes[$method][$uriPattern] = ['action' => $action, 'request' => $requestName];
 
 		if (!$name) {
 			$name = $this->generateRouteName($action);
@@ -95,7 +97,7 @@ class Router
 	 * @param string $action The controller and method
 	 */
 	public function get(string $uri, string $action, ?string $name = null): void {
-		$this->register("GET", $uri, $this->convertToAction($action), $name);
+		$this->register("GET", $uri, $this->convertToAction($action),null, $name);
 	}
 
 	/**
@@ -104,8 +106,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function post(string $uri, string $action, ?string $name = null): void {
-		$this->register("POST", $uri, $this->convertToAction($action), $name);
+	public function post(string $uri, string $action, string $requestName, $name = null): void {
+		$this->register("POST", $uri, $this->convertToAction($action), $requestName, $name);
 	}
 
 	/**
@@ -114,8 +116,8 @@ class Router
 	 * @param string $uri The URI for the route
 	 * @param string $action The controller and method
 	 */
-	public function put(string $uri, string $action, ?string $name = null): void {
-		$this->register("PUT", $uri, $this->convertToAction($action), $name);
+	public function put(string $uri, string $action, string $requestName,  ?string $name = null): void {
+		$this->register("PUT", $uri, $this->convertToAction($action), $requestName, $name);
 	}
 
 	/**
@@ -125,7 +127,7 @@ class Router
 	 * @param string $action The controller and method
 	 */
 	public function delete(string $uri, string $action, ?string $name = null): void {
-		$this->register("DELETE", $uri, $this->convertToAction($action), $name);
+		$this->register("DELETE", $uri, $this->convertToAction($action), null, $name);
 	}
 
 	/**
@@ -181,7 +183,9 @@ class Router
 			return new ErrorResponse("HTTP method $method not supported.", 405); // Method not Allowed
 		}
 
-		foreach ($this->routes[$method] as $uriPattern => $action) {
+		foreach ($this->routes[$method] as $uriPattern => $routeConfig) {
+			$action = $routeConfig['action'];
+			$requestClass = $routeConfig['request'] ?? null;
 			// Pass if current route matches this defined routes pattern.
 			if (!preg_match($uriPattern, $uri, $matches)) {
 				continue;
@@ -197,17 +201,18 @@ class Router
 			if (!class_exists($controller)) {
 				return new ErrorResponse("Controller $controller not found", 404);
 			}
+
 			$controllerInstance = new $controller();
 
 			if (!method_exists($controllerInstance, $function)) {
 				return new ErrorResponse("Method $function not found in controller $controller", 404);
 			}
 
+
 			// Convert parameters based on expected types
 			foreach ($params as $key => $value) {
 				/** var class-string<Model> $model*/
 				$model = "App\\Models\\" . ucfirst($key);
-
 				if (!class_exists($model)) {
 					continue;
 				}
@@ -225,6 +230,15 @@ class Router
 				}
 				$params[$key] = $model;
 			}
+
+			if ($requestClass && class_exists($requestClass)) {
+				$requestInstance = new $requestClass();
+				if (!$requestInstance instanceof Request) {
+					return new ErrorResponse("Invalid request class for $requestClass", 500);
+				}
+				array_unshift($params, $requestInstance);
+			}
+
 
 			// Execute the method from the controller
 			$response = call_user_func_array([$controllerInstance, $function], $params);
