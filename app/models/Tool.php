@@ -21,7 +21,7 @@ class Tool extends Model
 
 	/**
 	 * Retrieves all ProjectTool instances associated with this project.
-	 * @return array An array of ProjectTool instances.
+	 * @return ProjectTool[] An array of ProjectTool instances.
 	 */
 	public function projectTools(): array
 	{
@@ -30,11 +30,12 @@ class Tool extends Model
 
 	/**
 	 * Retrieves all Project instances associated with this tool through ProjectTools.
-	 * @return array An array of Project instances.
+	 * @return Project[] An array of Project instances.
 	 */
 	public function projects(): array {
 		$projectTools = $this->projectTools();
-		// Iterate over all projectTools and retrieve their relative Project.
+
+		/** @var Project[] $projects */
 		$projects = [];
 		foreach ($projectTools as $projectTool) {
 			$project = $projectTool->project();

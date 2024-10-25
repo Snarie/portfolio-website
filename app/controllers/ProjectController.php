@@ -95,7 +95,6 @@ class ProjectController extends Controller
 			$imagePath = saveImage($croppedImage, 16/9);
 		}
 
-		/** @var ProjectTool $projectTool */
 		foreach ($project->projectTools() as $projectTool) {
 			$projectTool->delete();
 		}

@@ -21,7 +21,7 @@ abstract class Model
 	/**
 	 * Fetches all records from the model's table.
 	 *
-	 * @return array An array of model instances.
+	 * @return static[] An array of model instances.
 	 */
 	public static function all(): array
 	{
@@ -53,7 +53,7 @@ abstract class Model
 	 * @param array $data Data to create a record.
 	 * @return static The newly created model instance.
 	 */
-	public static function create(array $data): self {
+	public static function create(array $data): static {
 		$instance = new static();
 		$fields = array_keys($data);
 		$placeholders = array_fill(0, count($fields), '?');
@@ -74,7 +74,7 @@ abstract class Model
 	 * @param mixed $id The primary key of the record to find.
 	 * @return static|null The model instance or null if not found.
 	 */
-	public static function find(mixed $id): ?self
+	public static function find(mixed $id): ?static
 	{
 		$instance = new static();
 		$sql = "SELECT * FROM $instance->table WHERE id = ?";
@@ -121,26 +121,28 @@ abstract class Model
 	/**
 	 * Retrieves the related model for a belongs-to relationship.
 	 *
-	 * @param string $relatedClass The related class name.
+	 * @template T of Model
+	 * @param class-string<T> $relatedClass The related class name.
 	 * @param string $foreignKey The foreign key pointing to the related model.
-	 * @return mixed The related model instance or null if not found
+	 * @return T|null The related model instance or null if not found
 	 */
-	protected function belongsTo(string $relatedClass, string $foreignKey): mixed
+	protected function belongsTo(string $relatedClass, string $foreignKey)
 	{
 		$relatedInstance = new $relatedClass();
 		$sql = "SELECT * FROM $relatedInstance->table WHERE id = ?";
 		$stmt = conn()->prepare($sql);
 		$stmt->execute([$this->$foreignKey]);
 		$stmt->setFetchMode(PDO::FETCH_CLASS, $relatedClass);
-		return $stmt->fetch();
+		return $stmt->fetch() ?: null;
 	}
 
 	/**
 	 * Retrieves all related models for a one-to-many relationship.
 	 *
-	 * @param string $relatedClass The related class name.
+	 * @template T of Model
+	 * @param class-string<T> $relatedClass The related class name, must extend Model.
 	 * @param string|null $foreignKey The foreign key in the related table.
-	 * @return array An array of related model instances.
+	 * @return T[] An array of related model instances.
 	 */
 	protected function oneToMany(string $relatedClass, ?string $foreignKey = null): array
 	{
