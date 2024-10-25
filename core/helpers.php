@@ -2,6 +2,7 @@
 
 use App\Responses\RedirectResponse;
 use App\Responses\HtmlResponse;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * Constructs a file path relative to the project root by joining the provided path segments.
@@ -27,6 +28,7 @@ function conn(): PDO {
 	static $pdo = null;
 
 	if ($pdo === null) {
+		/** @var PDO $pdo */
 		$pdo = require __DIR__ . '/../db.php';
 	}
 
@@ -193,4 +195,20 @@ function saveImage(string $formImage, ?float $aspectRatio = null): string {
 
 	// Returns the public URL path for the saved image.
 	return '/public/uploads/projects/' . $imageFileName;
+}
+
+/**
+ * Aborts the current execution and displays an error message.
+ *
+ * This function provides a way to handle unexpected errors, immediately stopping further processing.
+ * Intended for cases where a non-recoverable error occurs.
+ * 
+ * @param string $message A message describing the error, which will be displayed on the screen.
+ * @return void This function terminates after execution.
+ */
+#[NoReturn] function abort(string $message): void
+{
+	$title = "Unexpected Error";
+	include("templates/error.php");
+	exit;
 }

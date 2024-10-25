@@ -50,5 +50,5 @@ try {
 	$response->send();
 } catch (Exception $e) {
 	http_response_code(500);
-	echo "500 Internal Server Error - " . $e->getMessage();
+	abort("500 Internal Server Error - ". $e->getMessage());
 }

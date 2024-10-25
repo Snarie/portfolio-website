@@ -21,7 +21,6 @@ namespace App\Responses;
 		{
 			parent::__construct($statusCode, $headers);
 			$this->message = $message;
-			$this->addHeader('Content-Type', 'text/plain');
 		}
 
 		/**
@@ -31,6 +30,9 @@ namespace App\Responses;
 		public function send(): void
 		{
 			parent::sendHeaders();
-			echo $this->message;
+			$title = "Error Response";
+			$message = $this->message;
+			include "templates/error.php";
+//			echo $this->message;
 		}
 	}
