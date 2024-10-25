@@ -1,5 +1,6 @@
 <?php
 
+use app\controllers\Controller;
 use App\Models\Model;
 use App\Responses\Response;
 use App\Responses\ErrorResponse;
@@ -190,12 +191,12 @@ class Router
 			$params = array_filter($matches, fn($key) => !is_int($key), ARRAY_FILTER_USE_KEY);
 
 			// extract controller and function from action.
+			/** var class-string<Controller> $controller*/
 			list($controller, $function) = explode('@', $action);
 
 			if (!class_exists($controller)) {
 				return new ErrorResponse("Controller $controller not found", 404);
 			}
-
 			$controllerInstance = new $controller();
 
 			if (!method_exists($controllerInstance, $function)) {
@@ -204,6 +205,7 @@ class Router
 
 			// Convert parameters based on expected types
 			foreach ($params as $key => $value) {
+				/** var class-string<Model> $model*/
 				$model = "App\\Models\\" . ucfirst($key);
 
 				if (!class_exists($model)) {
