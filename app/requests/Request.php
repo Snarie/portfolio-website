@@ -19,7 +19,7 @@ abstract class Request
 
 
 			if (in_array('required', $rules) && (is_null($value) || $value === '')) {
-				$this->errors[] = "The $field field is required";
+				$this->errors[$field][] = "The $field field is required";
 				continue; // skip further validation if it's missing.
 			}
 
@@ -34,8 +34,10 @@ abstract class Request
 					$parameter = null;
 				}
 
-				if (!$this->checkRule($value, $rule, $parameter)) {
-					$this->errors[$field][] = "Validation failed for $field: rule $rule";
+
+				$message = $this->checkRule($value, $rule, $parameter);
+				if ($message) {
+					$this->errors[$field][] = $message;
 				}
 			}
 
@@ -47,19 +49,37 @@ abstract class Request
 		return empty($this->errors);
 	}
 
-	protected function checkRule($value, string $rule, $parameter = null): bool
+	protected function checkRule($value, string $rule, $parameter = null): ?string
 	{
-		return match ($rule) {
-			'string' => is_string($value),
-			'int' => filter_var ($value, FILTER_VALIDATE_INT) !== false,
-			'max' => strlen($value) <= (int)$parameter,
-			'min' => strlen($value) >= (int)$parameter,
-			'date' => strtotime($value) !== false,
-			'array' => is_array($value),
-			'after' => strtotime($value) >= strtotime($_POST[$parameter] ?? null),
-			'before' => strtotime($value) <= strtotime($_POST[$parameter] ?? null),
-			default => true,
-		};
+		switch ($rule) {
+			case 'string':
+				if (is_string($value)) break;
+				return "field must be a string.";
+			case 'int':
+				if (filter_var($value, FILTER_VALIDATE_INT)) break;
+				return "field must be a integer.";
+			case 'date':
+				if (strtotime($value)) break;
+				return "field must be a valid date.";
+			case 'array':
+				if (is_array($value)) break;
+				return "field must an array";
+			case 'max':
+				if (strlen($value) <= (int)$parameter) break;
+				return "field cannot exceed $parameter characters.";
+			case 'min':
+				if (strlen($value) >= (int)$parameter) break;
+				return "field must be at least $parameter characters.";
+			case 'after':
+				if (strtotime($value) >= strtotime($_POST[$parameter] ?? null)) break;
+				return "field date must be after $parameter.";
+			case 'before':
+				if (strtotime($value) <= strtotime($_POST[$parameter] ?? null)) break;
+				return "field date must be before $parameter.";
+			default:
+				return null;
+		}
+		return null;
 	}
 
 	public function getErrors(): array

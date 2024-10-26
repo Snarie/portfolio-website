@@ -4,7 +4,6 @@ if (!isset($tools) || !is_array($tools)) {
 	return;
 }
 ?>
-
 <section>
     <div id="imagePopup" class="popup">
         <div class="popup-content">
@@ -30,6 +29,7 @@ if (!isset($tools) || !is_array($tools)) {
                 <label for="name" class="f-18">Project Name</label>
                 <input type="text" id="name" name="name" required>
             </div>
+            <?=flashError('name')?>
         </article>
 
         <article>
@@ -37,6 +37,7 @@ if (!isset($tools) || !is_array($tools)) {
                 <label for="github_link" class="f-18">Project Link</label>
                 <input type="text" id="github_link" name="github_link" required>
             </div>
+            <?=flashError('github_link')?>
         </article>
 
         <article>
@@ -48,6 +49,7 @@ if (!isset($tools) || !is_array($tools)) {
             <div>
                 <input type="hidden" name="cropped_image" id="croppedImageInput">
             </div>
+            <?=flashError('cropped_image')?>
         </article>
 
         <article>
@@ -55,6 +57,7 @@ if (!isset($tools) || !is_array($tools)) {
                 <label for="description" class="f-18">Project Description</label>
                 <textarea id="description" name="description" required></textarea>
             </div>
+            <?=flashError('description')?>
         </article>
 
         <article class="grid column-2 gap-10">
@@ -74,6 +77,8 @@ if (!isset($tools) || !is_array($tools)) {
                 <label for="end_date" class="f-18">End Date</label>
                 <input type="date" id="end_date" name="end_date">
             </div>
+            <?=flashError('start_date')?>
+            <?=flashError('end_date')?>
         </article>
 
         <article>
@@ -87,6 +92,7 @@ if (!isset($tools) || !is_array($tools)) {
 					?>
                 </select>
             </div>
+            <?=flashError('tools')?>
         </article>
 
         <div class="button-container">
@@ -95,6 +101,5 @@ if (!isset($tools) || !is_array($tools)) {
     </form>
 
 </section>
-
 <script src="/public/js/disable-end-date.js"></script>
 <script src="/public/js/image-cropper.js"></script>

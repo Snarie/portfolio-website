@@ -8,7 +8,7 @@ class StoreProjectRequest extends Request
 	function rules(): array
 	{
 		return [
-			'name' => 'required|int|max:255',
+			'name' => 'required|string|max:255',
 			'github_link' => 'string|max:255',
 			'description' => 'string|max:65535',
 			'start_date' => 'date',

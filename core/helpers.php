@@ -212,3 +212,25 @@ function saveImage(string $formImage, ?float $aspectRatio = null): string {
 	include("templates/error.php");
 	exit;
 }
+
+/**
+ * Get the error message associated with the field if any.
+ *
+ * This function provides the first error found for the specified field when validating.
+ *
+ * @param string $field The name of the post field
+ * @return string|null The message encapsulated in a text field.
+ */
+function flashError(string $field): ?string
+{
+	if (session_status() === PHP_SESSION_NONE) {
+		// Start session if it hasn't started yet.
+		session_start();
+	}
+	if (isset($_SESSION['flash']['errors'][$field][0])) {
+		$message = "<p>" . $_SESSION['flash']['errors'][$field][0] . "</p>";
+		unset($_SESSION['flash']['errors'][$field]);
+		return $message;
+	}
+	return null;
+}
