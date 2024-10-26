@@ -118,7 +118,7 @@ function view(string $viewString, array $data = []): HtmlResponse
  *
  * The function decodes a base64-encoded JPEG image string and stores it as a file in the /public/uploads directory.
  * The image is assigned a unique name to avoid overwriting. An optional aspect ratio (e.g., 16/9) can be provided to
- * crop the image to content from the center. Otherwise, the image is saved as is. If the directorie does not exist yet,
+ * crop the image to content from the center. Otherwise, the image is saved as is. If the directory does not exist yet,
  * they will be created.
  *
  * <br>Example usage of $aspectRatio:
@@ -218,29 +218,23 @@ function saveImage(string $formImage, ?float $aspectRatio = null): string {
  * Get the error message associated with the field if any.
  *
  * This function provides the first error found for the specified field when validating.
+ * If a value is found for the field, it is retrieved and removed from the session after.
  *
  * @param string $field The name of the post field
  * @return string|null The message encapsulated in a text field.
  */
 function flashError(string $field): ?string
 {
-	if (session_status() === PHP_SESSION_NONE) {
-		// Start session if it hasn't started yet.
-		session_start();
-	}
-	if (isset($_SESSION['flash']['errors'][$field][0])) {
-		$message = "<p>" . $_SESSION['flash']['errors'][$field][0] . "</p>";
-		unset($_SESSION['flash']['errors'][$field]);
-		return $message;
-	}
-	return null;
+	/** @var ?string $value */
+	$value = flash('errors', $field)[0];
+	return $value !== null ? "<p>$value</p>" : null;
 }
 
 /**
  * Retrieves old input data for a specified form field if available.
  *
- * This function gets the value data for the given field from the flashed old data.
- * If a cached value is found for the field, it is retrieved and removed from the session after.
+ * This function provides the values of the specified form field before posting.
+ * If a value is found for the field, it is retrieved and removed from the session after.
  *
  * @param string $field The name identifier of the form field, same as is $_POST name.
  * @param string|null $alt An optional fallback value to be returned if no value exists.
@@ -248,14 +242,42 @@ function flashError(string $field): ?string
  */
 function old(string $field, ?string $alt = null): ?string
 {
+	return flash('old', $field) ?? $alt;
+}
+
+/**
+ * Retrieves and removes a flash message from the session.
+ *
+ * This function accesses a specified flash message stored in the session, optionally from a nested field.
+ * If the specified flash message exists, it is returned and removed from the session, if not `null` is returned.
+ * Automatically starts a session if one is not already started.
+ *
+ * <br>Example usage:
+ *  * `flash('errors', 'name')`, retrieves and removes the errors for the “name” form field.
+ *  * `flash('success')`, retrieves and removes a top-level flash success message.
+ *
+ * @param string $field The primary field to access in the flash session array.
+ * @param string|null $nestedField The optional nested field to retrieve within the main $field array.
+ * @return mixed The value of the flash message if it exists, otherwise `null`.
+ */
+function flash(string $field, ?string $nestedField = null): mixed
+{
 	if (session_status() === PHP_SESSION_NONE) {
 		// Start session if it hasn't started yet.
 		session_start();
 	}
-	if (isset($_SESSION['flash']['old'][$field])) {
-		$message = $_SESSION['flash']['old'][$field];
-		unset($_SESSION['flash']['old'][$field]);
-		return $message;
+	if ($nestedField) {
+		if (isset($_SESSION['flash'][$field][$nestedField])) {
+			$value = $_SESSION['flash'][$field][$nestedField];
+			unset($_SESSION['flash'][$field][$nestedField]);
+			return $value;
+		}
+	} else {
+		if (isset($_SESSION['flash'][$field])) {
+			$value = $_SESSION['flash'][$field];
+			unset($_SESSION['flash'][$field]);
+			return $value;
+		}
 	}
-	return $alt;
+	return null;
 }

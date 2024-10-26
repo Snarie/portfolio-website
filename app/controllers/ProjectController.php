@@ -64,10 +64,11 @@ class ProjectController extends Controller
 	{
 		if (!$request->validate()) {
 //			die(var_dump($request->getErrors()));
-			return redirect('project.edit', ['project' => $project->id])->with('errors', $request->getErrors());
+			return redirect('projects.edit', ['project' => $project->id])->with('errors', $request->getErrors());
 		}
 
 		if ($request->get('cropped_image') != null) {
+			die(var_dump($request->get('cropped_image')));
 			$imageLink = saveImage($request->get('cropped_image'), 16/9);
 		} else {
 			$imageLink = $project->image_link;
