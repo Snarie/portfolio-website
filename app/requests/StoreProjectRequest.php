@@ -9,12 +9,12 @@ class StoreProjectRequest extends Request
 	{
 		return [
 			'name' => 'required|string|max:255',
-			'github_link' => 'string|max:255',
-			'description' => 'string|max:65535',
-			'start_date' => 'date',
+			'description' => 'required|string|max:65535',
+			'github_link' => 'required|string|max:255',
+			'cropped_image' => 'required|string',
+			'start_date' => 'required|date',
 			'end_date' => 'date|after:start_date',
 			'tools' => 'array',
-			'cropped_image' => 'required|string'
 		];
 	}
 }

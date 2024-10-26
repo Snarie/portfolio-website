@@ -62,7 +62,8 @@ function redirect(string $routeName, array $params = []): RedirectResponse
 	}
 	catch (Exception $e) {
 		// Generation failed, return to home.
-		return new RedirectResponse('/');
+		$redirect = new RedirectResponse('/');
+		return $redirect->with('redirect', 'Invalid redirect, going to home instead.');
 	}
 }
 

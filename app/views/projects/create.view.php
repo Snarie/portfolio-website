@@ -26,7 +26,7 @@ if (!isset($tools) || !is_array($tools)) {
 
         <article>
             <div>
-                <label for="name" class="f-18">Project Name</label>
+                <label for="name" class="f-18">Project Name (required)</label>
                 <input type="text" id="name" name="name" required value="<?=old('name')?>">
 	            <?=flashError('name')?>
             </div>
@@ -34,7 +34,7 @@ if (!isset($tools) || !is_array($tools)) {
 
         <article>
             <div>
-                <label for="github_link" class="f-18">Project Link</label>
+                <label for="github_link" class="f-18">Project Link (required)</label>
                 <input type="text" id="github_link" name="github_link" required value="<?=old('github_link')?>">
 	            <?=flashError('github_link')?>
             </div>
@@ -43,7 +43,7 @@ if (!isset($tools) || !is_array($tools)) {
         <article>
             <div>
                 <label for="image" class="f-18">Select a Project Image (required)</label>
-                <input type="file" id="imageInput" accept="image/*" required ">
+                <input type="file" id="imageInput" accept="image/*" required>
                 <button type="button" onclick="openImagePopup()" class="button">Add Photo</button>
             </div>
             <div>
@@ -54,7 +54,7 @@ if (!isset($tools) || !is_array($tools)) {
 
         <article>
             <div>
-                <label for="description" class="f-18">Project Description</label>
+                <label for="description" class="f-18">Project Description (required)</label>
                 <textarea id="description" name="description" required ><?=old('description')?></textarea>
 	            <?=flashError('description')?>
             </div>
@@ -69,7 +69,7 @@ if (!isset($tools) || !is_array($tools)) {
             </div>
 
             <div>
-                <label for="start_date" class="f-18">Start Date</label>
+                <label for="start_date" class="f-18">Start Date (required)</label>
                 <input type="date" id="start_date" name="start_date" required value="<?=old('start_date')?>">
 	            <?=flashError('start_date')?>
             </div>

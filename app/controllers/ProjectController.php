@@ -62,21 +62,15 @@ class ProjectController extends Controller
 
 	public function update(UpdateProjectRequest $request, Project $project): Response
 	{
-		$name = $_POST['name'] ?? null;
+		if (!$request->validate()) {
+//			die(var_dump($request->getErrors()));
+			return redirect('project.edit', ['project' => $project->id])->with('errors', $request->getErrors());
+		}
 
-		$description = $_POST['description'] ?? null;
-
-		$start_date = $_POST['start_date'] ?? null;
-
-		$end_date = $_POST['end_date'] ?? null;
-
-		$toolIds = $_POST['tools'] ?? [];
-
-		$imagePath = null;
-
-		if (isset($_POST['cropped_image'])) {
-			$croppedImage = $_POST['cropped_image'];
-			$imagePath = saveImage($croppedImage, 16/9);
+		if ($request->get('cropped_image') != null) {
+			$imageLink = saveImage($request->get('cropped_image'), 16/9);
+		} else {
+			$imageLink = $project->image_link;
 		}
 
 		foreach ($project->projectTools() as $projectTool) {
@@ -84,14 +78,14 @@ class ProjectController extends Controller
 		}
 
 		$project->update([
-			'name' => $name,
-			'description' => $description,
-			'start_date' => $start_date,
-			'end_date' => $end_date,
-			'image_link' => $imagePath
+			'name' => $request->get('name'),
+			'description' => $request->get('description'),
+			'start_date' => $request->get('start_date'),
+			'end_date' => $request->get('end_date'),
+			'image_link' => $imageLink
 		]);
 
-		foreach ($toolIds as $toolId) {
+		foreach ($request->get('tools') as $toolId) {
 			ProjectTool::create([
 				'project_id' => $project->id,
 				'tool_id' => $toolId

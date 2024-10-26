@@ -11,6 +11,16 @@ if (!isset($tools) || !is_array($tools)) {
 	return;
 }
 ?>
+<section>
+    <div id="imagePopup" class="popup">
+        <div class="popup-content">
+            <div class="popup-canvas-container">
+                <canvas id="imageCanvas" class="popup-canvas"></canvas>
+            </div>
+            <button type="button" onclick="cropImage()" style="height: 25px;">Crop Image</button>
+        </div>
+    </div>
+</section>
 
 <section>
 	<article>
@@ -24,16 +34,18 @@ if (!isset($tools) || !is_array($tools)) {
         <input type="hidden" name="_method" value="PUT">
 		<article>
 			<div>
-				<label for="name" class="f-18">Project Name</label>
-				<input type="text" id="name" name="name" value="<?=$project->name?>" required>
+				<label for="name" class="f-18">Project Name (required)</label>
+				<input type="text" id="name" name="name" value="<?=old('name', $project->name)?>" required>
+                <?=flashError('name')?>
 			</div>
 		</article>
 
 		<article>
 			<div>
-				<label for="github_link" class="f-18">Project Link</label>
-				<input type="text" id="github_link" name="github_link" value="<?=$project->github_link?>" required>
-			</div>
+				<label for="github_link" class="f-18">Project Link (required)</label>
+				<input type="text" id="github_link" name="github_link" value="<?=old('github_link', $project->github_link)?>" required>
+			    <?=flashError('github_link')?>
+            </div>
 		</article>
 
 		<article>
@@ -42,38 +54,38 @@ if (!isset($tools) || !is_array($tools)) {
 				<input type="file" id="imageInput" accept="image/*">
 				<button type="button" onclick="openImagePopup()" class="button">Change Photo</button>
 			</div>
-			<div id="imagePopup" style="display: none;">
-				<canvas id="imageCanvas"></canvas>
-				<button type="button" onclick="cropImage()" class="button">Crop Image</button>
-			</div>
 			<div>
-				<input type="hidden" name="cropped_image" id="croppedImageInput" value="<?=htmlspecialchars($project->image_link)?>">
+				<input type="hidden" name="cropped_image" id="croppedImageInput">
+                <?=flashError('cropped_image')?>
 			</div>
 		</article>
 
 		<article>
 			<div>
-				<label for="description" class="f-18">Project Description</label>
-				<textarea id="description" name="description" required><?= htmlspecialchars($project->description)?></textarea>
+				<label for="description" class="f-18">Project Description (required)</label>
+				<textarea id="description" name="description" required><?=old('description', $project->description)?></textarea>
+                <?=flashError('description')?>
 			</div>
 		</article>
 
 		<article class="grid column-2 gap-10">
 			<div class="c-span-2">
 				<label for="disable_end_date" class="f-14">
-					<input type="checkbox" id="disable_end_date" name="disable_end_date" checked="false">
+					<input type="checkbox" id="disable_end_date" name="disable_end_date" <?= ($project->end_date == null) ? 'checked' : ''?>>
 					Disable End Date
 				</label>
 			</div>
 
 			<div>
-				<label for="start_date" class="f-18">Start Date</label>
-				<input type="date" id="start_date" name="start_date" value="<?=htmlspecialchars($project->start_date)?>" required>
+				<label for="start_date" class="f-18">Start Date (required)</label>
+				<input type="date" id="start_date" name="start_date" value="<?=old('start_date', $project->start_date)?>" required>
+                <?=flashError('start_date')?>
 			</div>
 
 			<div>
 				<label for="end_date" class="f-18">End Date</label>
-				<input type="date" id="end_date" name="end_date" value="<?=htmlspecialchars($project->end_date)?>">
+				<input type="date" id="end_date" name="end_date" value="<?=old('end_date', $project->end_date)?>">
+                <?=flashError('end_date')?>
 			</div>
 		</article>
 
