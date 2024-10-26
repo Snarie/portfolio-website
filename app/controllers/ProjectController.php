@@ -63,12 +63,10 @@ class ProjectController extends Controller
 	public function update(UpdateProjectRequest $request, Project $project): Response
 	{
 		if (!$request->validate()) {
-//			die(var_dump($request->getErrors()));
 			return redirect('projects.edit', ['project' => $project->id])->with('errors', $request->getErrors());
 		}
 
 		if ($request->get('cropped_image') != null) {
-			die(var_dump($request->get('cropped_image')));
 			$imageLink = saveImage($request->get('cropped_image'), 16/9);
 		} else {
 			$imageLink = $project->image_link;
