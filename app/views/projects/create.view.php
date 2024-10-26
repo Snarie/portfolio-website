@@ -27,58 +27,58 @@ if (!isset($tools) || !is_array($tools)) {
         <article>
             <div>
                 <label for="name" class="f-18">Project Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" required value="<?=old('name')?>">
+	            <?=flashError('name')?>
             </div>
-            <?=flashError('name')?>
         </article>
 
         <article>
             <div>
                 <label for="github_link" class="f-18">Project Link</label>
-                <input type="text" id="github_link" name="github_link" required>
+                <input type="text" id="github_link" name="github_link" required value="<?=old('github_link')?>">
+	            <?=flashError('github_link')?>
             </div>
-            <?=flashError('github_link')?>
         </article>
 
         <article>
             <div>
                 <label for="image" class="f-18">Select a Project Image (required)</label>
-                <input type="file" id="imageInput" accept="image/*" required>
+                <input type="file" id="imageInput" accept="image/*" required ">
                 <button type="button" onclick="openImagePopup()" class="button">Add Photo</button>
             </div>
             <div>
                 <input type="hidden" name="cropped_image" id="croppedImageInput">
+	            <?=flashError('cropped_image')?>
             </div>
-            <?=flashError('cropped_image')?>
         </article>
 
         <article>
             <div>
                 <label for="description" class="f-18">Project Description</label>
-                <textarea id="description" name="description" required></textarea>
+                <textarea id="description" name="description" required ><?=old('description')?></textarea>
+	            <?=flashError('description')?>
             </div>
-            <?=flashError('description')?>
         </article>
 
         <article class="grid column-2 gap-10">
             <div class="c-span-2">
                 <label for="disable_end_date" class="f-14">
-                    <input type="checkbox" id="disable_end_date" name="disable_end_date" checked="false">
+                    <input type="checkbox" id="disable_end_date" name="disable_end_date" <?=old('disable_end_date') ? 'checked' : ''?>>
                     Disable End Date
                 </label>
             </div>
 
             <div>
                 <label for="start_date" class="f-18">Start Date</label>
-                <input type="date" id="start_date" name="start_date" required>
+                <input type="date" id="start_date" name="start_date" required value="<?=old('start_date')?>">
+	            <?=flashError('start_date')?>
             </div>
 
             <div>
                 <label for="end_date" class="f-18">End Date</label>
-                <input type="date" id="end_date" name="end_date">
+                <input type="date" id="end_date" name="end_date" value="<?=old('end_date')?>">
+	            <?=flashError('end_date')?>
             </div>
-            <?=flashError('start_date')?>
-            <?=flashError('end_date')?>
         </article>
 
         <article>

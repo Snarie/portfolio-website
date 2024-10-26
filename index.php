@@ -5,8 +5,13 @@ require __DIR__ . "\core\helpers.php";
 require __DIR__ . "\core\Router.php";
 
 
-// Include the file containing the database connection.
-//$conn = require __DIR__ . "\db.php";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
+	$_SESSION['flash']['old'] = $_POST;
+}
 
 
 

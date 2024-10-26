@@ -234,3 +234,27 @@ function flashError(string $field): ?string
 	}
 	return null;
 }
+
+/**
+ * Retrieves old input data for a specified form field if available.
+ *
+ * This function gets the value data for the given field from the flashed old data.
+ * If a cached value is found for the field, it is retrieved and removed from the session after.
+ *
+ * @param string $field The name identifier of the form field, same as is $_POST name.
+ * @param string|null $alt An optional fallback value to be returned if no value exists.
+ * @return string|null Returns the previous value for the field if found, otherwise the fallback value or null.
+ */
+function old(string $field, ?string $alt = null): ?string
+{
+	if (session_status() === PHP_SESSION_NONE) {
+		// Start session if it hasn't started yet.
+		session_start();
+	}
+	if (isset($_SESSION['flash']['old'][$field])) {
+		$message = $_SESSION['flash']['old'][$field];
+		unset($_SESSION['flash']['old'][$field]);
+		return $message;
+	}
+	return $alt;
+}
