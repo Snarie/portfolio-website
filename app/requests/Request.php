@@ -76,6 +76,9 @@ abstract class Request
 			case 'before':
 				if (strtotime($value) <= strtotime($_POST[$parameter] ?? null)) break;
 				return "field date must be before $parameter.";
+			case 'matches':
+				if ($value == $_POST[$parameter]) break;
+				return "field must be the same as $parameter.";
 			default:
 				return null;
 		}

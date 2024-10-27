@@ -29,9 +29,9 @@
 		</article>
 		<article>
 			<div>
-				<label for="password_confirm" class="f-18">Password confirm</label>
-				<input type="text" id="password_confirm" name="password_confirm" required value="<?=old('password_confirm')?>">
-				<?=flashError('password_confirm')?>
+				<label for="password_confirmation" class="f-18">Password confirmation</label>
+				<input type="text" id="password_confirmation" name="password_confirmation" required value="<?=old('password_confirmation')?>">
+				<?=flashError('password_confirmation')?>
 			</div>
 		</article>
 
