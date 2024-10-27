@@ -1,1 +1,0 @@
-<p>Profile id: <?= htmlspecialchars($id)?></p>
