@@ -4,17 +4,10 @@ namespace App\Controllers;
 
 use App\Requests\LoginRequest;
 use App\Requests\RegisterRequest;
-use App\Responses\ErrorResponse;
 use App\Responses\Response;
 
 class UserController extends Controller
 {
-	// required pages:
-	// * login
-	// * register
-	// * update page (includes delete)
-
-
 	public function register(): Response
 	{
 		return view('auth.register');

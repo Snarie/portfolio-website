@@ -7,6 +7,9 @@ class LoginRequest extends Request
 
 	function rules(): array
 	{
-		// TODO: Implement rules() method.
+		return [
+			'email' => 'required|string|max:255',
+			'password' => 'required|string|min:8|max:255',
+		];
 	}
 }
