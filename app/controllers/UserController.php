@@ -10,13 +10,13 @@ class UserController extends Controller
 {
 	public function register(): Response
 	{
-		return view('auth.register');
+		return view('formpage/auth.register');
 	}
 
 	public function storeRegister(RegisterRequest $request): Response
 	{
 		if (!$request->validate()) {
-			return redirect('auth.register')->with('errors', $request->getErrors());
+			return redirect('formpage/auth.register')->with('errors', $request->getErrors());
 		}
 
 		//TODO: create User, then login user
@@ -25,13 +25,13 @@ class UserController extends Controller
 
 	public function login(): Response
 	{
-		return view('auth.login');
+		return view('formpage/auth.login');
 	}
 
-	public function loginRegister(LoginRequest $request): Response
+	public function storeLogin(LoginRequest $request): Response
 	{
 		if (!$request->validate()) {
-			return redirect('auth.login')->with('errors', $request->getErrors());
+			return redirect('formpage/auth.login')->with('errors', $request->getErrors());
 		}
 
 		//TODO: login user
