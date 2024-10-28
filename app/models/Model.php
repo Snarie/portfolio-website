@@ -115,6 +115,53 @@ abstract class Model
 	}
 
 	// =====================================
+	// Query Helper Methods
+	// =====================================
+
+	private array $queryConditions = [];
+
+	public static function where(string $field, mixed $value): static
+	{
+		$instance = new static();
+		$instance->queryConditions[] = [$field, '=', $value];
+		return $instance;
+	}
+
+	public function first(): ?static
+	{
+		if (empty($this->queryConditions)) {
+			return null;
+		}
+
+		$sql = "SELECT * FROM $this->table WHERE " . $this->buildConditions();
+		$stmt = conn()->prepare($sql);
+		$stmt->execute($this->getConditionValues());
+		$stmt->setFetchMode(PDO::FETCH_CLASS, static::class);
+		return $stmt->fetch() ?: null;
+	}
+
+	public function exists(): bool
+	{
+		if (empty($this->queryConditions)) {
+			return false;
+		}
+
+		$sql = "SELECT EXISTS (SELECT 1 FROM $this->table WHERE " . $this->buildConditions() . ")";
+		$stmt = conn()->prepare($sql);
+		$stmt->execute($this->getConditionValues());
+		return (bool) $stmt->fetchColumn();
+	}
+
+	private function buildConditions(): string
+	{
+		return implode(' AND ', array_map(fn($cond) => "$cond[0] $cond[1] ?", $this->queryConditions));
+	}
+
+	private function getConditionValues(): array
+	{
+		return array_map(fn($cond) => $cond[2], $this->queryConditions);
+	}
+	// =====================================
 	// SQL Relationship Functions
 	// =====================================
 

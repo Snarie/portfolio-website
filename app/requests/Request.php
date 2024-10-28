@@ -1,6 +1,9 @@
 <?php
 namespace App\Requests;
 
+use App\Models\Model;
+use App\Models\Project;
+
 abstract class Request
 {
 	abstract function rules(): array;
@@ -35,7 +38,7 @@ abstract class Request
 				}
 
 
-				$message = $this->checkRule($value, $rule, $parameter);
+				$message = $this->checkRule($value, $rule, $field, $parameter);
 				if ($message) {
 					$this->errors[$field][] = $message;
 				}
@@ -49,7 +52,7 @@ abstract class Request
 		return empty($this->errors);
 	}
 
-	protected function checkRule($value, string $rule, $parameter = null): ?string
+	protected function checkRule($value, string $rule, string $field, $parameter = null): ?string
 	{
 		switch ($rule) {
 			case 'string':
@@ -78,7 +81,13 @@ abstract class Request
 				return "field date must be before $parameter.";
 			case 'matches':
 				if ($value == $_POST[$parameter]) break;
-				return "field must be the same as $parameter.";
+				return "field must match $parameter.";
+			case 'unique':
+				/** @var Model $modelName */
+				$modelName = $parameter;
+				$model = $modelName::where($field, $_POST[$field]);
+				if (!$model->exists()) break;
+				return "$field is already in use.";
 			default:
 				return null;
 		}

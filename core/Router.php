@@ -155,7 +155,8 @@ class Router
 	 * @return string Returns the URL from the provided string version.
 	 * @throws Exception If no named route matches the given name.
 	 */
-	public function routeUrl(string $name, array $params = []): string {
+	public function routeUrl(string $name, array $params = []): string
+	{
 		if (!isset($this->namedRoutes[$name])) {
 			throw new Exception("No route named $name");
 		}

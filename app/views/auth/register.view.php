@@ -15,9 +15,9 @@
 		</article>
 		<article>
 			<div>
-				<label for="username" class="f-18">Username</label>
-				<input type="text" id="username" name="username" required value="<?=old('username')?>">
-				<?=flashError('username')?>
+				<label for="name" class="f-18">Name</label>
+				<input type="text" id="name" name="name" required value="<?=old('name')?>">
+				<?=flashError('name')?>
 			</div>
 		</article>
 		<article>
