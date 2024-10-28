@@ -6,6 +6,8 @@ use App\Models\Project;
 
 abstract class Request
 {
+	abstract function authorize(): bool;
+
 	abstract function rules(): array;
 
 	private array $errors = [];

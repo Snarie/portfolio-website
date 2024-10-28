@@ -4,6 +4,10 @@ namespace App\Requests;
 
 class StoreProjectRequest extends Request
 {
+	public function authorize(): bool
+	{
+		return true;
+	}
 
 	function rules(): array
 	{

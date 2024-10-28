@@ -4,6 +4,10 @@ namespace App\Requests;
 
 class UpdateProjectRequest extends Request
 {
+	function authorize(): bool
+	{
+		return true;
+	}
 
 	function rules(): array
 	{
