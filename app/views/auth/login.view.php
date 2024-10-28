@@ -16,7 +16,7 @@
         <article>
             <div>
                 <label for="password" class="f-18">Password</label>
-                <input type="text" id="password" name="password" required value="<?=old('password')?>">
+                <input type="password" id="password" name="password" required value="<?=old('password')?>">
 				<?=flashError('password')?>
             </div>
         </article>

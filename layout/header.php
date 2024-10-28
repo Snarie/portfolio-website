@@ -29,7 +29,7 @@
                 <li><a href="/projects/create">Create</a></li>
             </ul>
             <ul style="background-color: yellow">
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (auth()): ?>
                     <li>
                         <form action="/logout" method="post">
                             <input type="hidden" name="_method" value="DELETE">

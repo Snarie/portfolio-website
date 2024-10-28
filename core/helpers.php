@@ -284,3 +284,20 @@ function flash(string $field, ?string $nestedField = null): mixed
 	}
 	return null;
 }
+
+/**
+ * Retrieves the authenticated user based on the session-stored user ID.
+ *
+ * This function checks if the session is associated with a user by verifying the existence of session `user_id`.
+ * If a `user_id` is found, it attempts to retrieve its `User` model.
+ * Automatically starts a session if one hasn't already started.
+ *
+ * @return App\Models\User|Null The authenticated `User` instance if found, otherwise `null`.
+ */
+function auth(): ?App\Models\User
+{
+	if (session_status() === PHP_SESSION_NONE) {
+		session_start();
+	}
+	return isset($_SESSION['user_id']) ? App\Models\User::find($_SESSION['user_id']) : null;
+}

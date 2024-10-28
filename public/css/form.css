@@ -42,6 +42,7 @@ form article label {
 
 
 form article input[type="text"],
+form article input[type="password"],
 form article input[type="date"],
 form article textarea,
 form article select {
@@ -55,6 +56,7 @@ form article select {
     transition: border-color 0.3s ease;
 }
 form input[type="text"]:focus,
+form input[type="password"]:focus,
 form input[type="date"]:focus,
 form textarea:focus,
 form select:focus {
