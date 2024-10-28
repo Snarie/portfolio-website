@@ -226,8 +226,11 @@ function saveImage(string $formImage, ?float $aspectRatio = null): string {
 function flashError(string $field): ?string
 {
 	/** @var ?string $value */
-	$value = flash('errors', $field)[0];
-	return $value !== null ? "<p>$value</p>" : null;
+	$value = flash('errors', $field);
+	if ($value !== null) {
+		return "<p>$value[0]";
+	}
+	return null;
 }
 
 /**

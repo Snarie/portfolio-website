@@ -29,7 +29,17 @@
                 <li><a href="/projects/create">Create</a></li>
             </ul>
             <ul style="background-color: yellow">
-                
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li>
+                        <form action="/logout" method="post">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="button">Logout</button>
+                        </form>
+                    </li>
+                <?php else: ?>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Register</a></li>
+                <?php endif; ?>
             </ul>
         </section>
 

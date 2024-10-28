@@ -24,6 +24,7 @@
 		<div class="button-container">
 			<button type="submit" class="button">Login</button>
 		</div>
+        <?=flashError('verify')?>
 	</form>
 
 </section>

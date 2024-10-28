@@ -20,3 +20,4 @@ $router->get('/login', "UserController@login", 'auth.login');
 $router->post('/login', "UserController@storeLogin", LoginRequest::class);
 $router->get('/register', "UserController@register", 'auth.register');
 $router->post('/register', "UserController@storeRegister", RegisterRequest::class);
+$router->delete('/logout', "UserController@logout");

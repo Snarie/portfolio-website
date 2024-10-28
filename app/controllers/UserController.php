@@ -47,8 +47,8 @@ class UserController extends Controller
 
 		$user = User::where('email', $request->get('email'))->first();
 
-		if ($user || !password_verify($request->get('password'), $user->password)) {
-			return redirect('auth.login')->with('errors', ['verify' => 'Invalid email or password.']);
+		if (!$user || !password_verify($request->get('password'), $user->password)) {
+			return redirect('auth.login')->with('errors', ['verify' => ['Invalid email or password.']]);
 		}
 
 		session_start();
