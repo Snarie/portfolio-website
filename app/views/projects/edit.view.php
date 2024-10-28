@@ -30,8 +30,14 @@ if (!isset($tools) || !is_array($tools)) {
 
 <section class="form-container">
 	<form action="/projects/<?=$project->id?>" method="post" class="grid gap-20" enctype="multipart/form-data">
-        <!-- make it a put method -->
         <input type="hidden" name="_method" value="PUT">
+
+		<?php if ($message = flashError('auth')): ?>
+            <article>
+				<?=$message?>
+            </article>
+		<?php endif;?>
+
 		<article>
 			<div>
 				<label for="name" class="f-18">Project Name (required)</label>

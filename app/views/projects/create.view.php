@@ -24,6 +24,12 @@ if (!isset($tools) || !is_array($tools)) {
 <section class="form-container">
     <form action="/projects" method="post" class="grid gap-20">
 
+        <?php if ($message = flashError('auth')): ?>
+        <article>
+            <?=$message?>
+        </article>
+        <?php endif;?>
+
         <article>
             <div>
                 <label for="name" class="f-18">Project Name (required)</label>
