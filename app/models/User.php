@@ -7,6 +7,9 @@ class User extends Model
 	public string $email;
 	public string $name;
 	public string $password;
+	public bool $admin;
+
+	protected array $guarded = ['created_at', 'updated_at', 'admin'];
 
 	/**
 	 * Constructor for the User model.
