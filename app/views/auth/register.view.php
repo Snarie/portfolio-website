@@ -23,14 +23,14 @@
 		<article>
 			<div>
 				<label for="password" class="f-18">Password</label>
-				<input type="text" id="password" name="password" required value="<?=old('password')?>">
+				<input type="password" id="password" name="password" required value="<?=old('password')?>">
 				<?=flashError('password')?>
 			</div>
 		</article>
 		<article>
 			<div>
 				<label for="password_confirmation" class="f-18">Password confirmation</label>
-				<input type="text" id="password_confirmation" name="password_confirmation" required value="<?=old('password_confirmation')?>">
+				<input type="password" id="password_confirmation" name="password_confirmation" required value="<?=old('password_confirmation')?>">
 				<?=flashError('password_confirmation')?>
 			</div>
 		</article>
