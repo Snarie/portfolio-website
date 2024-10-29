@@ -17,13 +17,13 @@ class ProjectController extends Controller
 		return view('projects.index', ['projects' => $projects]);
 	}
 
-	public function create(): Response
+	protected function create(): Response
 	{
 		$tools = Tool::all();
 		return view('formpage/projects.create', ['tools' => $tools]);
 	}
 
-	public function store(StoreProjectRequest $request): Response
+	protected function store(StoreProjectRequest $request): Response
 	{
 		if(!$request->validate()) {
 			return redirect('projects.create')->with('errors', $request->getErrors());
@@ -54,13 +54,13 @@ class ProjectController extends Controller
 		return view('projects.show', ['project' => $project, 'tools' => $tools]);
 	}
 
-	public function edit(Project $project): Response
+	protected function edit(Project $project): Response
 	{
 		$tools = Tool::all();
 		return view('formpage/projects.edit', ['project' => $project, 'tools' => $tools]);
 	}
 
-	public function update(UpdateProjectRequest $request, Project $project): Response
+	protected function update(UpdateProjectRequest $request, Project $project): Response
 	{
 		if (!$request->validate()) {
 			return redirect('projects.edit', ['project' => $project->id])->with('errors', $request->getErrors());
@@ -94,7 +94,7 @@ class ProjectController extends Controller
 		return redirect("projects.show", ['project' => $project->id])->with('update', 'Project updated successfully.');
 	}
 
-	public function destroy(Project $project): Response
+	protected function destroy(Project $project): Response
 	{
 		return redirect('projects.index');
 	}

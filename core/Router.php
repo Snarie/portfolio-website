@@ -205,11 +205,6 @@ class Router
 
 			$controllerInstance = new $controller();
 
-			if (!method_exists($controllerInstance, $function)) {
-				return new ErrorResponse("Method $function not found in controller $controller", 404);
-			}
-
-
 			// Convert parameters based on expected types
 			foreach ($params as $key => $value) {
 				/** var class-string<Model> $model*/
