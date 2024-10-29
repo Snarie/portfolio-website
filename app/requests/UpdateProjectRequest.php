@@ -4,6 +4,14 @@ namespace App\Requests;
 
 class UpdateProjectRequest extends Request
 {
+	function authorize(): bool
+	{
+		$user = auth();
+		if (!$user) {
+			return false;
+		}
+		return $user->admin;
+	}
 
 	function rules(): array
 	{

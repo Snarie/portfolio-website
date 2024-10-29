@@ -6,6 +6,13 @@
 
 <section class="form-container">
 	<form action="/register" method="post" class="grid gap-20">
+
+		<?php if ($message = flashError('auth')): ?>
+            <article>
+				<?=$message?>
+            </article>
+		<?php endif;?>
+
 		<article>
 			<div>
 				<label for="email" class="f-18">Email</label>
@@ -13,6 +20,7 @@
 				<?=flashError('email')?>
 			</div>
 		</article>
+
 		<article>
 			<div>
 				<label for="name" class="f-18">Name</label>
@@ -20,6 +28,7 @@
 				<?=flashError('name')?>
 			</div>
 		</article>
+
 		<article>
 			<div>
 				<label for="password" class="f-18">Password</label>
@@ -27,6 +36,7 @@
 				<?=flashError('password')?>
 			</div>
 		</article>
+
 		<article>
 			<div>
 				<label for="password_confirmation" class="f-18">Password confirmation</label>

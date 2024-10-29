@@ -6,6 +6,8 @@ use App\Models\Project;
 
 abstract class Request
 {
+	abstract function authorize(): bool;
+
 	abstract function rules(): array;
 
 	private array $errors = [];
@@ -13,6 +15,12 @@ abstract class Request
 
 	public function validate(): bool
 	{
+		if (!$this->authorize()) {
+			$this->errors = [];
+			$this->errors['auth'] = ["User is not authorized to make this request."];
+			return false;
+		}
+
 		$rules = $this->rules();
 		$this->errors = [];
 
