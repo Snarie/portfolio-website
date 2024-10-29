@@ -6,8 +6,7 @@ class UpdateProjectRequest extends Request
 {
 	function authorize(): bool
 	{
-		$user = auth();
-		if (!$user) {
+		if (!$user = auth()) {
 			return false;
 		}
 		return $user->admin;

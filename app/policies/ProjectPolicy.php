@@ -6,10 +6,10 @@ class ProjectPolicy extends Policy
 {
 	function any(): bool
 	{
-		if ($user = auth()) {
-			return true;
+		if (!$user = auth()) {
+			return false;
 		}
-		return false;
+		return $user->admin;
 	}
 
 }
