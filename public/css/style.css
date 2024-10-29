@@ -124,7 +124,7 @@ button:hover {
     position: relative;
     display: inline-block; /* don't take more space than needed */
     max-width: 1000px;
-    aspect-ratio: 19/10; /* Ensures border stays consistent */
+    aspect-ratio: 10/6; /* Ensures border stays consistent */
     width: 90%;
 }
 
@@ -133,7 +133,7 @@ button:hover {
     /* Exact location inside the cover*/
     padding-left: 13.4%;
     padding-right: 13.4%;
-    padding-top: 2.7%;
+    padding-top: 8.5%;
     /* Scales height downwards */
     display: block;
     width: 100%;
@@ -144,7 +144,7 @@ button:hover {
     position: absolute;
     width: 100%;
     height: auto;
-    top: -11%;
+    top: 0;
     left: 0;
 }
 
