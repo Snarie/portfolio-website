@@ -26,7 +26,6 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="/about">About</a></li>
                 <li><a href="/projects">Projects</a></li>
-                <li><a href="/projects/create">Create</a></li>
             </ul>
             <ul style="background-color: yellow">
                 <?php if (auth()): ?>
@@ -36,6 +35,9 @@
                             <button type="submit" class="button">Logout</button>
                         </form>
                     </li>
+                    <?php if (auth()->admin): ?>
+                        <li><a href="/projects/create">Create Project</a></li>
+                    <?php endif; ?>
                 <?php else: ?>
                 <li><a href="/login">Login</a></li>
                 <li><a href="/register">Register</a></li>
