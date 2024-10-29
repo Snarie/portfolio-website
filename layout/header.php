@@ -39,8 +39,8 @@
                         <li><a href="/projects/create">Create Project</a></li>
                     <?php endif; ?>
                 <?php else: ?>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/register">Register</a></li>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
                 <?php endif; ?>
             </ul>
         </section>
