@@ -2,8 +2,7 @@ footer {
     background-color: var(--footer-color);
     color: white;
     margin-top: 150px; /* Space between page content and footer */
-    padding-left: 100px;
-    padding-right: 100px;
+    padding: 50px 100px;
     display: grid;
     align-items: center;
 }
