@@ -1,12 +1,12 @@
 <section class="grid gap-10 column-3">
-    <article class="grid gap-10 column-2">
+    <article class="grid gap-10 column-2 j-left">
         <p class="f-24" style="grid-column: span 2;">Pages</p>
         <a class="footer-link" href="/">Home</a>
         <a class="footer-link" href="/about">About</a>
         <a class="footer-link" href="/projects">Projects</a>
     </article>
 
-    <article class="grid gap-10 column-2 ">
+    <article class="grid gap-10 column-2 j-left">
         <p class="f-24" style="grid-column: span 2">Latest Projects</p>
 	    <?php
 	    $latestProjects = \App\Models\Project::latestProjects(4);
@@ -16,7 +16,7 @@
 	    ?>
     </article>
 
-    <article style="display: grid">
+    <article class="grid j-left">
         <p class="f-24">Contact me</p>
         <div>
             <a class="footer-icon" href="https://github.com/Snarie"><img src="/public/images/github-icon.png" alt=""></a>
