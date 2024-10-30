@@ -17,22 +17,22 @@
     </div>
 	<nav class="navbar-fullscreen grid column-3">
         <section class="grid column-3" style="width: 80%">
-            <ul style="background-color: green">
+            <ul>
                 <li><button onclick="applyDarkMode()" class="navbar-button-dark">Dark Mode</button></li>
                 <li><button onclick="applyLightMode()" class="navbar-button-light">Light Mode</button></li>
                 <li><button onclick="resetToSystemDefault()" class="navbar-button-theme-reset">System Default</button></li>
             </ul>
-            <ul style="background-color: blue">
+            <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/about">About</a></li>
                 <li><a href="/projects">Projects</a></li>
             </ul>
-            <ul style="background-color: yellow">
+            <ul>
                 <?php if (auth()): ?>
                     <li>
                         <form action="/logout" method="post">
                             <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="button">Logout</button>
+                            <button type="submit">Logout</button>
                         </form>
                     </li>
                     <?php if (auth()->admin): ?>
