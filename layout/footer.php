@@ -1,4 +1,4 @@
-<section class="grid gap-10 column-3">
+<section class="grid gap-30 column-3 decrease-columns ">
     <article class="grid gap-10 column-2 j-left">
         <p class="f-24" style="grid-column: span 2;">Pages</p>
         <a class="footer-link" href="/">Home</a>

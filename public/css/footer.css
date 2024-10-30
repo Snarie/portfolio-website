@@ -5,8 +5,6 @@ footer {
     padding-left: 100px;
     padding-right: 100px;
     display: grid;
-    /*background-color: green;*/
-    height: 300px;
     align-items: center;
 }
 
