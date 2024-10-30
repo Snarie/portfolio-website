@@ -51,6 +51,9 @@ nav.navbar-fullscreen.show {
 nav.navbar-fullscreen ul {
     list-style-type: none;
     text-align: center;
+    position: relative;
+    padding-left: 7px;
+    padding-right: 5px;
 }
 /* Hidden state of <ul> inside navbar */
 nav.navbar-fullscreen ul {
@@ -61,28 +64,41 @@ nav.navbar-fullscreen.show ul {
     opacity: 1;
 }
 
-/* Margin between each <li> element */
-nav.navbar-fullscreen li {
-    margin: 20px 0;
+
+
+
+/* Ensure <li> elements are block-level and properly spaced */
+nav.navbar-fullscreen ul li {;
+    position: relative;
+    display: block; /* Make each <li> take full width */
+    /*padding: 10px 15px;*/
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 65px;
 }
 
 /* Styling for buttons inside navbar*/
-nav.navbar-fullscreen li button {
+nav.navbar-fullscreen ul li button {
     border: none;
     background: none;
-    color: var(--main-color-2);
+    padding: 0;
 }
-/* Change button text color when hovering*/
-nav.navbar-fullscreen li button:hover {
-    color: var(--main-color);
+nav.navbar-fullscreen ul li a {
+    text-decoration: none;
 }
 
-/* Ensure <li> elements are block-level and properly spaced */
-nav.navbar-fullscreen ul li {
-    position: relative;
-    display: block; /* Make each <li> take full width */
-    padding: 10px 15px;
+nav.navbar-fullscreen ul * {
+    color: var(--text-color-2);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: inherit;
 }
+
+
 
 /* Add an animated line under the <li> when hovered */
 nav.navbar-fullscreen ul li::after {
@@ -97,6 +113,16 @@ nav.navbar-fullscreen ul li::after {
     transform-origin: right; /* Start animation from the right */
     transition: transform 0.3s cubic-bezier(.23,.99,.34,1.01) /* quadratic transform with slower start */
 }
+nav.navbar-fullscreen ul::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 1px;
+    height: 100%;
+    background-color: var(--main-color);
+    width: 2px;
+}
+
 
 /* Hover effect to expand the line below the item */
 nav.navbar-fullscreen ul li:hover::after {
@@ -104,12 +130,7 @@ nav.navbar-fullscreen ul li:hover::after {
     transform-origin: left;
 }
 
-/* Link styling inside the navbar */
-nav.navbar-fullscreen a {
-    color: var(--main-color);
-    font-size: 24px;
-    text-decoration: none;
-}
+
 /* Display flex box for shown navbar */
 nav.navbar-fullscreen.show {
     display: flex;
@@ -149,6 +170,16 @@ nav.navbar-fullscreen.show {
     background-color: var(--main-color);
 }
 
+@media only screen and (max-width: 700px) {
+    nav.navbar-fullscreen section {
+        grid-template-columns: 1fr;
+        grid-gap: 20px;
+    }
+    nav.navbar-fullscreen {
+        background-color: var(--secondary-color);
+        transition: background-color 0.5s ease;
+    }
+}
 
 
 
