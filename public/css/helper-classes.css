@@ -61,3 +61,7 @@
 .j-left { justify-items: left; }
 .j-center { justify-items: center; }
 .j-right { justify-items: right; }
+
+.v-start { align-items: start; }
+.v-center { align-items: center; }
+.v-end { align-items: end; }

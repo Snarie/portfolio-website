@@ -32,8 +32,8 @@ foreach ($projects as $project):
                     <img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
                 </figure>
             </article>
-            <article>
-                <div class="grid gap-20">
+            <article class="v-end">
+                <div class="grid gap-20" style="height: 80%">
                     <h2 style="text-align: left"><?=$project->name?></h2>
                     <p style="text-align: left"><?=$project->description?></p>
                     <div>
