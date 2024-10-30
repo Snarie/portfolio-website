@@ -22,7 +22,6 @@ if ($user = auth()) {
 </section>
 
 <?php
-$projects = [$projects[0], $projects[1], $projects[2], $projects[3], $projects[4]];
 foreach ($projects as $project):
 	if ($project instanceof Project): ?>
         <section class="mw-1600px f-18 grid column-2 decrease-columns">
