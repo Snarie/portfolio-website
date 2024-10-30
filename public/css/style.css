@@ -9,6 +9,9 @@
     --text-color: #111;
     --text-color-2: #222;
     --text-color-3: #333;
+
+    --pattern-color-1: #ddd;
+    --pattern-color-2: #ccc;
 }
 
 .dark-mode {
@@ -19,6 +22,9 @@
     --text-color: #ddd;
     --text-color-2: #eee;
     --text-color-3: #fff;
+
+    --pattern-color-1: #121212;
+    --pattern-color-2: #101010;
 }
 
 article p {
@@ -32,20 +38,31 @@ article p {
 }
 
 body {
-    margin-top: 100px;
+    /*margin-top: 100px;*/
     background-color: var(--main-color);
     color: var(--text-color);
 }
 main {
-    margin-left: 20px;
-    margin-right: 20px;
+    /*margin-left: 20px;*/
+    /*margin-right: 20px;*/
 }
 
 section {
     padding-bottom: 50px;
 }
 .title-container  {
-    /*padding-bottom: ;*/
+    padding-top: 150px;
+    padding-bottom: 150px;
+    /*background-color: var(--main-color);*/
+    background-image:
+            linear-gradient(30deg,  var(--pattern-color-1) 12%, transparent 12.5%, transparent 87%, var(--pattern-color-1) 87.5%, var(--pattern-color-1)),
+            linear-gradient(150deg, var(--pattern-color-1) 12%, transparent 12.5%, transparent 87%, var(--pattern-color-1) 87.5%, var(--pattern-color-1)),
+            linear-gradient(30deg,  var(--pattern-color-1) 12%, transparent 12.5%, transparent 87%, var(--pattern-color-1) 87.5%, var(--pattern-color-1)),
+            linear-gradient(150deg, var(--pattern-color-1) 12%, transparent 12.5%, transparent 87%, var(--pattern-color-1) 87.5%, var(--pattern-color-1)),
+            linear-gradient(60deg,  var(--pattern-color-2) 25%, transparent 25.5%, transparent 75%, var(--pattern-color-2) 75%, var(--pattern-color-2)),
+            linear-gradient(60deg,  var(--pattern-color-2) 25%, transparent 25.5%, transparent 75%, var(--pattern-color-2) 75%, var(--pattern-color-2));
+    background-size:80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
 }
 article {
     width: 100%;

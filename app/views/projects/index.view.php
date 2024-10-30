@@ -14,8 +14,8 @@ if ($user = auth()) {
 }
 ?>
 
-<section class="mw-1024px title-container">
-	<article>
+<section class="title-container">
+	<article class="mw-1024px">
 		<h1 class="all-upper">Projects</h1>
 		<h2>Here you will find all created projects, with each project containing its own page</h2>
 	</article>
@@ -31,7 +31,7 @@ foreach ($projects as $project):
                     <img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
                 </figure>
             </article>
-            <article class="v-end">
+            <article class="v-center">
                 <div class="grid gap-20" style="height: 80%">
                     <h2 style="text-align: left"><?=$project->name?></h2>
                     <p style="text-align: left"><?=$project->description?></p>

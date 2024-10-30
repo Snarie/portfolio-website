@@ -12,8 +12,8 @@ if (!isset($tools) || !is_array($tools)) {
 }
 ?>
 
-<section class="mw-1024px title-container grid gap-30">
-	<article>
+<section class="title-container grid gap-30">
+	<article class="mw-1024px">
 		<h1 class="all-upper"><?=$project->name?></h1>
 		<h2>
 			<?php
@@ -28,7 +28,7 @@ if (!isset($tools) || !is_array($tools)) {
 			?>
 		</h2>
 	</article>
-	<article>
+	<article class="mw-1024px">
 		<a href="<?=$project->github_link?>" class="large-button all-upper">project link</a>
 	</article>
 </section>
