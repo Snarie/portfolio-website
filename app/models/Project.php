@@ -52,4 +52,15 @@ class Project extends Model
 		return $tools;
 	}
 
+	/**
+	 * Retrieves the latest projects based on the creation date.
+	 * @param int $limit The amount the latest projects to retrieve.
+	 * @return static[] An array of the latest Project instances.
+	 */
+	public static function latestProjects(int $limit = 3): array
+	{
+		$instance = new static();
+		return $instance->orderBy('created_at', 'DESC')->limit($limit)->get();
+	}
+
 }
