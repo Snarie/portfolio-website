@@ -12,6 +12,8 @@
 		<h2><?=$message?></h2>
 	</section>
 </main>
-<?php include path('layout', 'footer.php');?>
+<footer>
+	<?php include path('layout', 'footer.php');?>
+</footer>
 </body>
 </html>

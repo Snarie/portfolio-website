@@ -10,6 +10,8 @@
 <main>
     <?php include $viewPath;?>
 </main>
-<?php include path('layout', 'footer.php');?>
+<footer>
+	<?php include path('layout', 'footer.php');?>
+</footer>
 </body>
 </html>
