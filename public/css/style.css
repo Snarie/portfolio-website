@@ -1,4 +1,5 @@
 :root {
+    --footer-color: #222;
     --main-color: #eee;
     --main-color-2: #fff;
     --main-color-3: #bbb;
@@ -12,6 +13,7 @@
 }
 
 .dark-mode {
+    --footer-color: #0f0f0f;
     --main-color: #151515;
     --main-color-2: #1d1d1d;
     --main-color-3: #3c3c3c;
