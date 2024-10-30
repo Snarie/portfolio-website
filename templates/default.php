@@ -6,7 +6,7 @@
 </head>
 <body>
 <?php include path('layout', 'header.php');?>
-<main class="grid gap-20">
+<main class="grid gap-50">
 	<?php include $viewPath;?>
 </main>
 <?php include path('layout', 'footer.php');?>

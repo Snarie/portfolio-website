@@ -15,7 +15,7 @@ if (!isset($tools) || !is_array($tools)) {
 <section class="mw-1024px title-container grid gap-30">
 	<article>
 		<h1 class="all-upper"><?=$project->name?></h1>
-		<h3>
+		<h2>
 			<?php
 			$startDate = date('d F Y', strtotime($project->start_date));
 			echo "$startDate - ";
@@ -26,33 +26,37 @@ if (!isset($tools) || !is_array($tools)) {
 				echo "ongoing";
 			}
 			?>
-		<h3/>
+		</h2>
 	</article>
 	<article>
 		<a href="<?=$project->github_link?>" class="large-button all-upper">project link</a>
 	</article>
 </section>
 
-<section >
+<section class="mw-1024px f-18">
 	<article>
 		<figure class="project-image-container">
 			<img src="<?=$project->image_link?>" alt="Project Image" class="image">
 			<img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
 		</figure>
 	</article>
-	<article>
+	<article class="j-left">
 		<h3>Project description</h3>
 		<p><?=nl2br($project->description)?></p>
 	</article>
 </section>
 
-<section>
-	<article>
-		<?php
-		foreach ($tools as $tool) {
-			echo "<p>$tool->name</p>";
-		}
-		?>
+<section class="mw-1024px">
+	<article class="mw-800px">
+        <h3 style="text-align: left">Tools used</h3>
+        <div>
+	        <?php
+
+	        foreach ($tools as $tool) {
+		        echo "<p class='text-style-box'>$tool->name</p>";
+	        }
+	        ?>
+        </div>
 	</article>
 </section>
 
