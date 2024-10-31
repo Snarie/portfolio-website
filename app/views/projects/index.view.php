@@ -21,6 +21,27 @@ if ($user = auth()) {
 	</article>
 </section>
 
+<section class="mw-1024px">
+    <form action="/projects/filter" method="post">
+        <article>
+            <div>
+                <label for="tools" class="f-18" style="color: var(--text-color)">Filter on Tools</label>
+                <select id="tools" name="tools[]" multiple class="skills-select">
+				    <?php
+				    foreach (\App\Models\Tool::all() as $tool) {
+					    echo "<option value=\"".$tool->id."\">".htmlspecialchars($tool->name)."</option>";
+				    }
+				    ?>
+                </select>
+                <p>Hold down Ctrl (Windows) or Command (Mac) to select multiple options.</p>
+            </div>
+            <button type="submit" class="button">Filter</button>
+        </article>
+        <div class="button-container">
+        </div>
+    </form>
+</section>
+
 <?php
 foreach ($projects as $project):
 	if ($project instanceof Project): ?>

@@ -17,7 +17,6 @@
             When i'm not busy with learning, i enjoy gaming or going out with friends.
             <br><br>
             I've been coding since i was 12, and am still improving every day, i love the create the back-end of websites or programs, while trying to improve my understanding of creation a good UI/UX.
-            
         </h3>
     </article>
 </section>
