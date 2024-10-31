@@ -30,13 +30,16 @@
             <ul>
                 <?php if (auth()): ?>
                     <li>
-                        <form action="/logout" method="post">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit">Logout</button>
-                        </form>
+                        <a>
+                            <form action="/logout" method="post">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit">Logout</button>
+                            </form>
+                        </a>
                     </li>
                     <?php if (auth()->admin): ?>
                         <li><a href="/projects/create">Create Project</a></li>
+                        <li><a href="/tools">Edit Tools</a></li>
                     <?php endif; ?>
                 <?php else: ?>
                     <li><a href="/login">Login</a></li>
