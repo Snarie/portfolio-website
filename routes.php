@@ -5,6 +5,7 @@ use App\Requests\StoreToolRequest;
 use App\Requests\UpdateProjectRequest;
 use App\Requests\LoginRequest;
 use App\Requests\RegisterRequest;
+use App\Requests\UpdateToolRequest;
 
 $router->get("/", "HomeController@home");
 $router->get("/about", "HomeController@about");
@@ -17,8 +18,10 @@ $router->get("/projects/{project}/edit", "ProjectController@edit");
 $router->put("/projects/{project}", "ProjectController@update", UpdateProjectRequest::class);
 $router->delete("/projects/{project}", "ProjectController@destroy");
 
-$router->get("/tools/create", "ToolController@create");
+$router->get('/tools', "ToolController@index");
 $router->post("/tools", "ToolController@store", StoreToolRequest::class);
+$router->put("/tools/{tool}", "ToolController@update", UpdateToolRequest::class);
+$router->delete("/tools/{tool}/delete", "ToolController@delete");
 
 $router->get('/login', "UserController@login", 'auth.login');
 $router->post('/login', "UserController@storeLogin", LoginRequest::class);

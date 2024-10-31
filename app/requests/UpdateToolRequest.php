@@ -2,7 +2,7 @@
 
 namespace App\Requests;
 
-class StoreToolRequest extends Request
+class UpdateToolRequest extends Request
 {
 	function authorize(): bool
 	{

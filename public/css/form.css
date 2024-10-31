@@ -16,7 +16,7 @@ article {
     position: relative;
 }
 
-article:not(:last-child)::after {
+article:not(:last-child):not(.no-line)::after {
     content: "";
     position: absolute;
     left: 0;
@@ -70,6 +70,7 @@ form textarea {
 }
 
 form div.button-container {
+    display: flex;
     justify-content: flex-end;
 }
 
