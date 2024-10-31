@@ -126,7 +126,5 @@ if (!isset($tools) || !is_array($tools)) {
     </form>
 </section>
 
-<!-- TODO: create a delete form-->
-
 <script src="/public/js/disable-end-date.js"></script>
 <script src="/public/js/image-cropper.js"></script>
