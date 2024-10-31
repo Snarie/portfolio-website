@@ -1,5 +1,6 @@
 <?php
 
+use App\Requests\FilterProjectRequest;
 use App\Requests\StoreProjectRequest;
 use App\Requests\StoreToolRequest;
 use App\Requests\UpdateProjectRequest;
@@ -17,6 +18,8 @@ $router->get("/projects/{project}", "ProjectController@show");
 $router->get("/projects/{project}/edit", "ProjectController@edit");
 $router->put("/projects/{project}", "ProjectController@update", UpdateProjectRequest::class);
 $router->delete("/projects/{project}", "ProjectController@destroy");
+
+$router->post("/projects/filter", "ProjectController@filter", FilterProjectRequest::class);
 
 $router->get('/tools', "ToolController@index");
 $router->post("/tools", "ToolController@store", StoreToolRequest::class);

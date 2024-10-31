@@ -63,4 +63,26 @@ class Project extends Model
 		return $instance->orderBy('created_at', 'DESC')->limit($limit)->get();
 	}
 
+	/**
+	 * Retrieves all Projects that include a specific tool by checking each project's tools list.
+	 *
+	 * @param int $toolId The ID of the tool to filter projects by.
+	 * @return static[] An array of Project instances that contain the specified tool.
+	 */
+	public static function withTool(int $toolId): array
+	{
+		$projectsWithTool = [];
+		$allProjects = static::all();
+
+		foreach ($allProjects as $project) {
+			foreach ($project->tools() as $tool) {
+				if ($tool->id === $toolId) {
+					$projectsWithTool[] = $project;
+					break; // Tool found; no need to check more.
+				}
+			}
+		}
+		return $projectsWithTool;
+	}
+
 }

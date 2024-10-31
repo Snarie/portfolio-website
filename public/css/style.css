@@ -271,7 +271,6 @@ form label {
 /* Select element styling */
 .skills-select {
     width: 100%;
-    min-height: 150px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;

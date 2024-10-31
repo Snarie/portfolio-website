@@ -25,15 +25,16 @@ if ($user = auth()) {
     <form action="/projects/filter" method="post">
         <article>
             <div>
-                <label for="tools" class="f-18" style="color: var(--text-color)">Filter on Tools</label>
-                <select id="tools" name="tools[]" multiple class="skills-select">
+                <label for="tool" class="f-18" style="color: var(--text-color)">Filter on Tools</label>
+                <select id="tool" name="tool" class="skills-select">
 				    <?php
+				    $selectedTool = (int)old('tool');
 				    foreach (\App\Models\Tool::all() as $tool) {
-					    echo "<option value=\"".$tool->id."\">".htmlspecialchars($tool->name)."</option>";
+                        $isSelected = $tool->id === $selectedTool ? "selected" : "";
+					    echo "<option value=\"".$tool->id."\" $isSelected>".htmlspecialchars($tool->name)."</option>";
 				    }
 				    ?>
                 </select>
-                <p>Hold down Ctrl (Windows) or Command (Mac) to select multiple options.</p>
             </div>
             <button type="submit" class="button">Filter</button>
         </article>

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Requests\FilterProjectRequest;
 use App\Requests\StoreProjectRequest;
 use App\Responses\Response;
 use App\Models\Project;
@@ -99,4 +100,12 @@ class ProjectController extends Controller
 		return redirect('projects.index');
 	}
 
+	public function filter(FilterProjectRequest $request): Response
+	{
+		if (!$request->validate()) {
+			return redirect('projects.index');
+		}
+		$projects = Project::withTool($request->get('tool'));
+		return view('projects.index', ['projects' => $projects]);
+	}
 }
