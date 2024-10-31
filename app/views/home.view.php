@@ -22,7 +22,7 @@
                             <img src="<?=$project->image_link?>" alt="Project Image" class="image">
                             <img src="/public/images/laptop-overlay.png" alt="cover" class="cover">
                         </figure>
-                        <h2><?=$project->name?></h2>
+                        <h2 style="color: var(--text-color)"><?=$project->name?></h2>
                     </a>
                 </div>
 	        <?php endforeach; ?>
@@ -38,17 +38,18 @@
 
 </section>
 
-<section>
+<section class="mw-1024px">
     <article class="mw-800px">
-        <h2 style="text-align: left">Skills</h2>
-        <div style="display: flex; justify-content: center">
-            <?php foreach (\App\Models\Tool::all() as $tool) {
-                echo "<p class='text-style-box'>$tool->name</p>";
-            }
-	        ?>
+        <h3 style="text-align: left">Skills</h3>
+        <div>
+			<?php
+
+			foreach (\App\Models\Tool::all() as $tool) {
+				echo "<p class='text-style-box'>$tool->name</p>";
+			}
+			?>
         </div>
     </article>
-
 </section>
 
 <script src="/public/js/carousel-toggle.js"></script>
