@@ -37,6 +37,7 @@ class ProjectController extends Controller
 			'description' => $request->get('description'),
 			'start_date' => $request->get('start_date'),
 			'end_date' => $request->get('end_date'),
+			'github_link' => $request->get('github_link'),
 			'image_link' => $imagePath
 		]);
 
@@ -82,6 +83,7 @@ class ProjectController extends Controller
 			'description' => $request->get('description'),
 			'start_date' => $request->get('start_date'),
 			'end_date' => $request->get('end_date'),
+			'github_link' => $request->get('github_link'),
 			'image_link' => $imageLink
 		]);
 

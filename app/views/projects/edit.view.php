@@ -113,8 +113,7 @@ if (!isset($tools) || !is_array($tools)) {
 		</article>
 
 		<div class="button-container">
-			<button type="submit" class="button">Create Project</button>
-
+			<button type="submit" class="button">Update Project</button>
 		</div>
 
 	</form>
