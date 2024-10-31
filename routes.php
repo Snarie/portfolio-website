@@ -1,6 +1,7 @@
 <?php
 
 use App\Requests\StoreProjectRequest;
+use App\Requests\StoreToolRequest;
 use App\Requests\UpdateProjectRequest;
 use App\Requests\LoginRequest;
 use App\Requests\RegisterRequest;
@@ -15,6 +16,9 @@ $router->get("/projects/{project}", "ProjectController@show");
 $router->get("/projects/{project}/edit", "ProjectController@edit");
 $router->put("/projects/{project}", "ProjectController@update", UpdateProjectRequest::class);
 $router->delete("/projects/{project}", "ProjectController@destroy");
+
+$router->get("/tools/create", "ToolController@create");
+$router->post("/tools", "ToolController@store", StoreToolRequest::class);
 
 $router->get('/login', "UserController@login", 'auth.login');
 $router->post('/login', "UserController@storeLogin", LoginRequest::class);

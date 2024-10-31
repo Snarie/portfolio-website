@@ -7,6 +7,12 @@
 <section class="form-container">
 	<form action="/tools" method="post" class="grid gap-20">
 
+		<?php if ($message = flash('success')): ?>
+            <article>
+				<?=$message?>
+            </article>
+		<?php endif;?>
+
 		<?php if ($message = flashError('auth')): ?>
 			<article>
 				<?=$message?>
