@@ -11,12 +11,18 @@ function applySystemDefaultTheme() {
     }
 }
 document.addEventListener("DOMContentLoaded", function() {
-    const savedTheme = localStorage.getItem('theme');
+    let savedTheme = localStorage.getItem('theme');
 
+    if (!savedTheme) {
+        localStorage.setItem('theme', 'system');
+        savedTheme = 'system';
+    }
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-mode');
     } else if (savedTheme === 'light') {
         document.body.classList.remove('dark-mode');
+    } else if (savedTheme === 'system') {
+        applySystemDefaultTheme();
     }
 })
 
@@ -32,7 +38,7 @@ function applyDarkMode() {
 }
 function resetToSystemDefault() {
     dropMenu();
-    localStorage.removeItem('theme');
+    localStorage.setItem('theme', 'system');
     applySystemDefaultTheme();
 }
 

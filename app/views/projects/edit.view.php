@@ -114,10 +114,16 @@ if (!isset($tools) || !is_array($tools)) {
 
 		<div class="button-container">
 			<button type="submit" class="button">Create Project</button>
+
 		</div>
 
 	</form>
-
+    <form action="/projects/<?=$project->id?>" method="post" class="grid gap-20">
+        <input type="hidden" name="_method" value="DELETE">
+        <div class="button-container">
+            <button type="submit" class="button">Delete Project</button>
+        </div>
+    </form>
 </section>
 
 <!-- TODO: create a delete form-->

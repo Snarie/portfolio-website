@@ -22,6 +22,14 @@ if ($user = auth()) {
 </section>
 
 <section class="mw-1024px">
+	<?php
+	if ($message = flash('success')) {
+		echo "<article style=\"grid-column: span 2\">$message</article>";
+	}
+	if ($message = flash('fail')) {
+		echo "<article style=\"grid-column: span 2\">$message</article>";
+	}
+	?>
     <form action="/projects/filter" method="post">
         <article>
             <div>

@@ -97,7 +97,11 @@ class ProjectController extends Controller
 
 	protected function destroy(Project $project): Response
 	{
-		return redirect('projects.index');
+		if ($project->delete()) {
+			return redirect('projects.index')->with('success', 'Project deleted successfully');
+		} else {
+			return redirect('projects.index')->with('fail', 'Project could not be deleted');
+		}
 	}
 
 	public function filter(FilterProjectRequest $request): Response

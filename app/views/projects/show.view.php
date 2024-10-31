@@ -47,6 +47,14 @@ if (!isset($tools) || !is_array($tools)) {
 </section>
 
 <section class="mw-1024px">
+	<?php
+	if ($message = flash('success')) {
+		echo "<article style=\"grid-column: span 2\">$message</article>";
+	}
+	if ($message = flash('fail')) {
+		echo "<article style=\"grid-column: span 2\">$message</article>";
+	}
+	?>
 	<article class="mw-800px">
         <h3 style="text-align: left">Tools used</h3>
         <div>
