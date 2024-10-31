@@ -217,3 +217,46 @@ button:hover {
     margin: 5px;
     border-radius: 5px;
 }
+
+.carousel-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.carousel-item {
+    flex: 1 0 auto;
+}
+.carousel-dots {
+    display: none;
+}
+@media only screen and (max-width: 700px) {
+    .carousel {
+        position: relative;
+        overflow: hidden;
+    }
+    .carousel-images {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        transition: transform 0.3s linear;
+        scroll-snap-type: x mandatory;
+        overflow-x: auto;
+    }
+    .carousel-item {
+        flex: 1 0 100%; /*take up full width*/
+        scroll-snap-align: center;
+    }
+    .carousel-dots {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        margin-top: 10px;
+    }
+    .dot {
+        height: 10px;
+        width: 10px;
+        background-color: var(--secondary-color);
+        border-radius: 50%;
+        display: inline-block;
+    }
+}
